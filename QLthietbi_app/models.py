@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Max
+from django.db.models import F
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, password=None, **extra_fields):
@@ -111,6 +112,89 @@ class KyThuatVien(BaseUserProfile):
             else:
                 self.id_nguoidung = 'KTV0001'
         super(KyThuatVien, self).save(*args, **kwargs)  
-        
-        
+
+class Tang(models.Model):
+    id_tang = models.CharField(max_length=10, primary_key=True, blank=True, null=False, unique=True, editable=False)
+    ten_tang = models.CharField(max_length=30, verbose_name='Tên tầng')
+    class Meta:
+        ordering = ['-id_tang']
+    def save(self, *args, **kwargs):
+        if not self.id_tang:
+            self.id_tang = Tang.objects.aggregate(Max('id_tang'))['id_tang__max']
+            if self.id_tang:
+                self.id_tang = 'T' + str(int(self.id_tang[1:]) + 1).zfill(4)
+            else:
+                self.id_tang = 'T0001'
+        super(Tang, self).save(*args, **kwargs)
+    def __str__(self):
+        return self.ten_tang
     
+class Phong(models.Model):
+    id_phong = models.CharField(max_length=10, primary_key=True, blank=True, null=False, unique=True, editable=False)
+    ten_phong = models.CharField(max_length=30, verbose_name='Tên phòng')
+    tang = models.ForeignKey(Tang, on_delete=models.CASCADE, verbose_name='Tầng')
+    class Meta:
+        ordering = ['-id_phong']
+    def save(self, *args, **kwargs):
+        if not self.id_phong:
+            self.id_phong = Phong.objects.aggregate(Max('id_phong'))['id_phong__max']
+            if self.id_phong:
+                self.id_phong = 'P' + str(int(self.id_phong[1:]) + 1).zfill(4)
+            else:
+                self.id_phong = 'P0001'
+        super(Phong, self).save(*args, **kwargs)
+    def __str__(self):
+        return self.ten_phong
+    
+class LoaiThietBi(models.Model):
+    id_loai_thiet_bi = models.CharField(max_length=10, primary_key=True, blank=True, null=False, unique=True, editable=False)
+    ten_loai_thiet_bi = models.CharField(max_length=30, verbose_name='Tên loại thiết bị')
+    class Meta:
+        ordering = ['-id_loai_thiet_bi']
+    def save(self, *args, **kwargs):
+        if not self.id_loai_thiet_bi:
+            self.id_loai_thiet_bi = LoaiThietBi.objects.aggregate(Max('id_loai_thiet_bi'))['id_loai_thiet_bi__max']
+            if self.id_loai_thiet_bi:
+                self.id_loai_thiet_bi = 'LTB' + str(int(self.id_loai_thiet_bi[3:]) + 1).zfill(4)
+            else:
+                self.id_loai_thiet_bi = 'LTB0001'
+        super(LoaiThietBi, self).save(*args, **kwargs)
+    def __str__(self):
+        return self.ten_loai_thiet_bi
+    
+class ThietBi(models.Model):
+    id_thiet_bi = models.CharField(max_length=10, primary_key=True, blank=True, null=False, unique=True, editable=False)
+    ten_thiet_bi = models.CharField(max_length=30, verbose_name='Tên thiết bị')
+    loai_thiet_bi = models.ForeignKey(LoaiThietBi, on_delete=models.CASCADE, verbose_name='Loại thiết bị') # Thiết bị điện, thiết bị y tế, thiết bị văn phòng,...
+    phong = models.ForeignKey(Phong, on_delete=models.CASCADE, verbose_name='Phòng',)
+    hinh_anh = models.ImageField(upload_to='images/', blank=True, null=True, verbose_name='Hình ảnh')
+    ngay_mua = models.DateField(verbose_name='Ngày mua')
+    gia_mua = models.IntegerField(verbose_name='Giá mua')
+    tinh_trang_choices = [
+        ('hoatdong', 'Hoạt động'),
+        ('dangbaotri', 'Đang bảo trì'),
+        ('bihong', 'Bị hỏng'),
+    ]
+    tinh_trang = models.CharField(max_length=10, choices=tinh_trang_choices, default='hoatdong', verbose_name='Tình trạng')
+    ngay_bao_tri = models.DateField(verbose_name='Ngày bảo trì')
+    mo_ta = models.TextField(verbose_name='Mô tả')
+    class Meta:
+        ordering = ['-id_thiet_bi']
+    
+    def save(self, *args, **kwargs):
+        if not self.id_thiet_bi:
+            self.id_thiet_bi = ThietBi.objects.aggregate(Max('id_thiet_bi'))['id_thiet_bi__max']
+            if self.id_thiet_bi:
+                self.id_thiet_bi = 'TB' + str(int(self.id_thiet_bi[2:]) + 1).zfill(4)
+            else:
+                self.id_thiet_bi = 'TB0001'
+        super(ThietBi, self).save(*args, **kwargs)
+
+    # def ten_tang(self):
+    #     return self.phong.tang.ten_tang
+    # ten_tang.short_description = 'Tầng'
+    
+    
+    def __str__(self):
+        return self.ten_thiet_bi
+

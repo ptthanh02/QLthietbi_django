@@ -7,11 +7,12 @@
 
 - Mở shell: python manage.py shell
 ---------------------Lệnh Python Shell để Insert Data---------------------------
+
 from QLthietbi_app.models import QuanLy, CustomUser, NhanVien, KyThuatVien
 from django.utils import timezone
 from datetime import date
 # Tạo một user
-user = CustomUser.objects.create_superuser(username='admin2', password='123', ho='Nguyen', ten='Van A',gioi_tinh='nam', ngay_sinh=date(2002, 1, 1), sdt='0123456789', email='admin2@gmail.com',ngay_vao_lam=timezone.now(),chuc_vu ='quanly')
+user = CustomUser.objects.create_superuser(username='admin', password='123',chuc_vu ='quanly', email='admin@mail.com', ho='Pham', ten='Tien Thanh',gioi_tinh='nam', ngay_sinh=date(2002, 5, 7), sdt='0123456789',ngay_vao_lam=timezone.now())
 user.save()
 
 # Tạo một quản lý

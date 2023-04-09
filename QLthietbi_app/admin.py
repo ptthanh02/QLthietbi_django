@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
+from .models import Tang, Phong, LoaiThietBi, ThietBi
+#from .forms import ThietBiForm
+from django import forms
 
 class CustomUserAdmin(UserAdmin):
     list_display = ('id', 'username', 'ho', 'ten', 'gioi_tinh', 'chuc_vu', 'ngay_sinh', 'email', 'sdt', 'ngay_vao_lam', 'is_staff', 'is_active')
@@ -18,11 +21,49 @@ class CustomUserAdmin(UserAdmin):
         ),
     )
     search_fields = ('username', 'email', 'ho', 'ten')
-    ordering = ('username',)
+    ordering = ('id',)
     
-
-
 admin.site.register(CustomUser, CustomUserAdmin)
+
+class ThietBiInlineFormset(forms.models.BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for form in self.forms:
+            form.empty_permitted = True
+
+class TangAdmin(admin.ModelAdmin):
+    list_display = ('id_tang', 'ten_tang')
+    
+class ThietBiInline(admin.TabularInline):
+    model = ThietBi
+
+class PhongAdmin(admin.ModelAdmin):
+    inlines = [ThietBiInline]
+    list_display = ('id_phong', 'ten_phong', 'tang')
+
+class LoaiThietBiAdmin(admin.ModelAdmin):
+    list_display = ('id_loai_thiet_bi', 'ten_loai_thiet_bi')
+
+class ThietBiAdmin(admin.ModelAdmin):
+    list_display = ['id_thiet_bi', 'ten_thiet_bi','hinh_anh', 'loai_thiet_bi', 'phong', 'ten_tang', 'ngay_mua', 'gia_mua', 'tinh_trang', 'ngay_bao_tri', 'mo_ta']
+    list_filter = ('loai_thiet_bi', 'tinh_trang', 'ngay_bao_tri')
+    search_fields = ('ten_thiet_bi', 'loai_thiet_bi', 'tinh_trang')
+    ordering = ('id_thiet_bi',)
+    list_per_page = 10
+    
+    def ten_tang(self, obj):
+        queryset = Tang.objects.filter(id_tang=obj.phong.tang.id_tang)
+        return queryset[0].ten_tang
+    ten_tang.short_description = 'Tầng'
+
+admin.site.register(Tang, TangAdmin)
+admin.site.register(Phong, PhongAdmin)
+admin.site.register(LoaiThietBi, LoaiThietBiAdmin)
+admin.site.register(ThietBi, ThietBiAdmin)
+
+
+
+
 
 
 
