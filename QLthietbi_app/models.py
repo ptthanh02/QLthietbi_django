@@ -39,7 +39,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     
     USER_ROLES = [    ('quanly', 'Quản Lý'),    ('nhanvien', 'Nhân Viên'),    ('kythuatvien', 'Kỹ Thuật Viên'),]
     chuc_vu = models.CharField(choices=USER_ROLES, max_length=20, default='Chưa đặt chức vụ',verbose_name='Chức vụ')
-    
+
     email = models.EmailField(verbose_name='Địa chỉ email', unique=True)
     sdt = models.CharField(max_length=10, null=True, blank=True, verbose_name='Số điện thoại')
     ngay_sinh = models.DateField(null=True, blank=True, verbose_name='Ngày sinh')
@@ -77,7 +77,6 @@ def create_user_profile(sender, instance, created, **kwargs):
             KyThuatVien.objects.create(user=instance)
 
 class QuanLy(BaseUserProfile):
-    
     def save(self, *args, **kwargs):
 
         if not self.id_nguoidung:
@@ -100,9 +99,7 @@ class NhanVien(BaseUserProfile):
                 self.id_nguoidung = 'NV0001'
         super(NhanVien, self).save(*args, **kwargs)  
         
-
 class KyThuatVien(BaseUserProfile):
-
     def save(self, *args, **kwargs):
 
         if not self.id_nguoidung:
@@ -112,27 +109,11 @@ class KyThuatVien(BaseUserProfile):
             else:
                 self.id_nguoidung = 'KTV0001'
         super(KyThuatVien, self).save(*args, **kwargs)  
-
-class Tang(models.Model):
-    id_tang = models.CharField(max_length=10, primary_key=True, blank=True, null=False, unique=True, editable=False)
-    ten_tang = models.CharField(max_length=30, verbose_name='Tên tầng')
-    class Meta:
-        ordering = ['-id_tang']
-    def save(self, *args, **kwargs):
-        if not self.id_tang:
-            self.id_tang = Tang.objects.aggregate(Max('id_tang'))['id_tang__max']
-            if self.id_tang:
-                self.id_tang = 'T' + str(int(self.id_tang[1:]) + 1).zfill(4)
-            else:
-                self.id_tang = 'T0001'
-        super(Tang, self).save(*args, **kwargs)
-    def __str__(self):
-        return self.ten_tang
     
 class Phong(models.Model):
     id_phong = models.CharField(max_length=10, primary_key=True, blank=True, null=False, unique=True, editable=False)
     ten_phong = models.CharField(max_length=30, verbose_name='Tên phòng')
-    tang = models.ForeignKey(Tang, on_delete=models.CASCADE, verbose_name='Tầng')
+    so_tang = models.IntegerField(verbose_name='Số tầng')
     class Meta:
         ordering = ['-id_phong']
     def save(self, *args, **kwargs):
@@ -189,11 +170,6 @@ class ThietBi(models.Model):
             else:
                 self.id_thiet_bi = 'TB0001'
         super(ThietBi, self).save(*args, **kwargs)
-
-    # def ten_tang(self):
-    #     return self.phong.tang.ten_tang
-    # ten_tang.short_description = 'Tầng'
-    
     
     def __str__(self):
         return self.ten_thiet_bi

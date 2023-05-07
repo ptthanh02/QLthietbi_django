@@ -18,6 +18,7 @@ from django.urls import path, include
 from django.views.generic.base import RedirectView
 
 urlpatterns = [
+    #path('', RedirectView.as_view(url='login/')),
     path('', RedirectView.as_view(url='login/')),
     path('admin/', admin.site.urls),
     path('', include('QLthietbi_app.urls')),

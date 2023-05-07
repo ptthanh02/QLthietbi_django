@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from .models import Phong, ThietBi, LoaiThietBi
 
 def render_login(request):
     return render(request, 'dangnhap.html')
@@ -24,7 +25,7 @@ def perform_login(request):
         if user is not None:
             login(request, user)
             #if user.role == 'quanly':
-            return redirect('Trangchinh/')
+            return redirect('quanly/')
             # elif user.role == 'nhanvien':
             #         return redirect('nhanvien')
             # elif user.role == 'kythuatvien':
@@ -34,7 +35,11 @@ def perform_login(request):
             return HttpResponseRedirect('/')
         
 def render_trangchinh(request):
-    return render(request, 'quanly.html')
+    listThietBi = ThietBi.objects.filter(id_phong=id)
+    phong = Phong.objects.get(id_phong=id)
+    print('--------------------------')
+    print(listThietBi)
+    return render({'listThietBi': listThietBi, 'phong': phong})
 
 def perform_logout(requet):
     return HttpResponseRedirect('/')
