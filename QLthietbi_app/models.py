@@ -157,8 +157,8 @@ class ThietBi(models.Model):
         ('bihong', 'Bị hỏng'),
     ]
     tinh_trang = models.CharField(max_length=10, choices=tinh_trang_choices, default='hoatdong', verbose_name='Tình trạng')
-    ngay_bao_tri = models.DateField(verbose_name='Ngày bảo trì')
-    mo_ta = models.TextField(verbose_name='Mô tả')
+    ngay_bao_tri = models.DateField(verbose_name='Ngày bảo trì',blank=True, null=True)
+    mo_ta = models.TextField(verbose_name='Mô tả', blank=True, null=True)
     class Meta:
         ordering = ['-id_thiet_bi']
     

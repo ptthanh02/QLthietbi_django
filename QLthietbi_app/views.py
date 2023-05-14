@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import Phong, ThietBi, LoaiThietBi
+from .forms import ThemThietBiForm
 
 def render_login(request):
     return render(request, 'dangnhap.html')
@@ -40,10 +41,18 @@ def render_trangchinh(request):
     return render(request,"quanly.html",{'listThietBi': listThietBi, 'listPhong': listPhong})
 
 def render_themthietbi(request):
-    
-    return render(request,"themtb.html")
-
-    
+    summitted = False
+    if request.method == "POST":
+        form = ThemThietBiForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/themthietbi/?submitted=True')
+    else:
+        form = ThemThietBiForm
+        if 'submitted' in request.GET:
+            summitted = True
+    form = ThemThietBiForm
+    return render(request,"themtb.html", {'form': form}) 
     
 def perform_logout(requet):
     return HttpResponseRedirect('/')
