@@ -11,6 +11,23 @@ body {
     top: 56px;
 }
 
+.custom {
+    width: 2-px !important;
+}
+
+table-responsive.dataTable thead .sorting:after,
+table-responsive.dataTable thead .sorting:before,
+table-responsive.dataTable thead .sorting_asc:after,
+table-responsive.dataTable thead .sorting_asc:before,
+table-responsive.dataTable thead .sorting_asc_disabled:after,
+table-responsive.dataTable thead .sorting_asc_disabled:before,
+table-responsive.dataTable thead .sorting_desc:after,
+table-responsive.dataTable thead .sorting_desc:before,
+table-responsive.dataTable thead .sorting_desc_disabled:after,
+table-responsive.dataTable thead .sorting_desc_disabled:before {
+  bottom: .5em;
+}
+
 #body-row {
     margin-left:0;
     margin-right:0;

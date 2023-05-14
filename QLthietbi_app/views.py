@@ -35,11 +35,15 @@ def perform_login(request):
             return HttpResponseRedirect('/')
         
 def render_trangchinh(request):
-    listThietBi = ThietBi.objects.filter(id_phong=id)
-    phong = Phong.objects.get(id_phong=id)
-    print('--------------------------')
-    print(listThietBi)
-    return render({'listThietBi': listThietBi, 'phong': phong})
+    listThietBi = ThietBi.objects.all()
+    listPhong = Phong.objects.all()
+    return render(request,"quanly.html",{'listThietBi': listThietBi, 'listPhong': listPhong})
 
+def render_themthietbi(request):
+    
+    return render(request,"themtb.html")
+
+    
+    
 def perform_logout(requet):
     return HttpResponseRedirect('/')
