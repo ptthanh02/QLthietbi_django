@@ -10,6 +10,7 @@ urlpatterns = [
     path('logout', views.perform_logout, name='perform_logout'),
     path('quanly/', views.render_trangchinh, name='render_trangchinh'),
     path('themthietbi/', views.render_themthietbi, name='render_themthietbi'),
+    path('thietbi/<str:id_thiet_bi>', views.render_chitietthietbi, name='render_chitietthietbi'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

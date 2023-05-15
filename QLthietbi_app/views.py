@@ -43,7 +43,7 @@ def render_trangchinh(request):
 def render_themthietbi(request):
     summitted = False
     if request.method == "POST":
-        form = ThemThietBiForm(request.POST)
+        form = ThemThietBiForm(request.POST,request.FILES)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect('/themthietbi/?submitted=True')
@@ -53,6 +53,11 @@ def render_themthietbi(request):
             summitted = True
     form = ThemThietBiForm
     return render(request,"themtb.html", {'form': form}) 
+
+def render_chitietthietbi(request, id_thiet_bi):
+    thietbi = ThietBi.objects.get(id_thiet_bi=id_thiet_bi)
+    phong = Phong.objects.get(id_phong=thietbi.phong.id_phong)
+    return render(request,"chitiettb.html", {'thietbi': thietbi, 'phong': phong})
     
 def perform_logout(requet):
     return HttpResponseRedirect('/')
