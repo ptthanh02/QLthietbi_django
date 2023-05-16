@@ -121,12 +121,6 @@ to {background-position: -100px 0px;background-size:2750px;}
     box-shadow: 0 0 0 0.2rem rgba(52,58,64,255);
 }
 
-/* #no-data {
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-} */
-
 table-responsive.dataTable thead .sorting:after,
 table-responsive.dataTable thead .sorting:before,
 table-responsive.dataTable thead .sorting_asc:after,
