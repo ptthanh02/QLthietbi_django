@@ -1,19 +1,131 @@
 body {
     padding-top: 56px;
-    background-image: url("../imgs/login_1920x1080.png");
+    /* background-image: url("../imgs/login_1920x1080.png"); */
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
 }
 
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro:200');
+
+body  {
+    background-image: url('https://static.pexels.com/photos/414171/pexels-photo-414171.jpeg');
+  background-size:cover;
+        -webkit-animation: slidein 100s;
+        animation: slidein 100s;
+
+        -webkit-animation-fill-mode: forwards;
+        animation-fill-mode: forwards;
+
+        -webkit-animation-iteration-count: infinite;
+        animation-iteration-count: infinite;
+
+        -webkit-animation-direction: alternate;
+        animation-direction: alternate;              
+}
+
+@-webkit-keyframes slidein {
+from {background-position: top; background-size:3000px; }
+to {background-position: -100px 0px;background-size:2750px;}
+}
+
+@keyframes slidein {
+from {background-position: top;background-size:3000px; }
+to {background-position: -100px 0px;background-size:2750px;}
+
+}
+
+.center
+{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(75, 75, 250, 0.3);
+  border-radius: 3px;
+}
+.center h1{
+  text-align:center;
+  color:white;
+  font-family: 'Source Code Pro', monospace;
+  text-transform:uppercase;
+}
+
 .sticky-offset {
     top: 56px;
 }
 
-.custom {
-    width: 2-px !important;
+.dropdown-toggle::after {
+    color: white; /* Màu của mũi tên trỏ xuống */
 }
+
+/* Data Table */
+
+.page-item.active .page-link {
+    color: #ffffff;
+    background-color: #343a40;
+    border-color: #343a40;
+}
+
+.page-link {
+    color: #343a40;
+}
+
+.page-link:hover {
+    color: #ffffff;
+    background-color: #343a40;
+    border-color: #343a40;
+}
+
+.page-link:focus {
+    box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);
+}
+
+.page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+    cursor: auto;
+    background-color: #ffffff;
+    border-color: #ffffff;
+}
+
+.dataTables_length .custom-select {
+    background-color: #ffffff; /* Màu nền */
+    border-color: #343a40; /* Màu viền */
+    margin-top: 2px;
+}
+
+.dataTables_length .custom-select:hover {
+    background-color: #ffffff; /* Màu nền */
+    border-color: #343a40; /* Màu viền */
+}
+
+.dataTables_length .custom-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(52,58,64,255);
+}
+
+.dataTables_filter .form-control {
+    background-color: #ffffff; /* Màu nền */
+    border-color: #343a40; /* Màu viền */
+    margin-right: 100px;
+    margin-top: 2px;
+}
+
+.dataTables_filter .form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(52,58,64,255);
+}
+
+/* #no-data {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+} */
 
 table-responsive.dataTable thead .sorting:after,
 table-responsive.dataTable thead .sorting:before,
@@ -27,6 +139,14 @@ table-responsive.dataTable thead .sorting_desc_disabled:after,
 table-responsive.dataTable thead .sorting_desc_disabled:before {
   bottom: .5em;
 }
+
+.dataTables_wrapper table.dataTable td,
+.dataTables_wrapper table.dataTable th {
+  text-align: center;
+  font-family: 'Source Code Pro', monospace;
+}
+
+/* -------------------------------DataTable End-------------------------------------------- */
 
 #body-row {
     margin-left:0;

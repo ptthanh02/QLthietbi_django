@@ -124,6 +124,7 @@ class Phong(models.Model):
             else:
                 self.id_phong = 'P0001'
         super(Phong, self).save(*args, **kwargs)
+    
     def __str__(self):
         return self.ten_phong
     
@@ -160,7 +161,7 @@ class ThietBi(models.Model):
     ngay_bao_tri = models.DateField(verbose_name='Ngày bảo trì',blank=True, null=True)
     mo_ta = models.TextField(verbose_name='Mô tả', blank=True, null=True)
     class Meta:
-        ordering = ['-id_thiet_bi']
+        ordering = ['id_thiet_bi']
     
     def save(self, *args, **kwargs):
         if not self.id_thiet_bi:
