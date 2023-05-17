@@ -58,6 +58,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.ten
+   
+    class Meta:
+        verbose_name_plural = 'Người dùng'
 
 class BaseUserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
@@ -109,46 +112,44 @@ class KyThuatVien(BaseUserProfile):
             else:
                 self.id_nguoidung = 'KTV0001'
         super(KyThuatVien, self).save(*args, **kwargs)  
+        
+class Tang(models.Model):
+    ten_tang = models.CharField(max_length=10,verbose_name='Số tầng')
+    
+    class meta:
+        ordering = ['-ten_tang']
+        verbose_name_plural = 'Tầng'
+        
+    def __str__(self):
+        return self.ten_tang
     
 class Phong(models.Model):
-    id_phong = models.CharField(max_length=10, primary_key=True, blank=True, null=False, unique=True, editable=False)
+    tang = models.ForeignKey(Tang, on_delete=models.CASCADE, verbose_name='Tầng')
     ten_phong = models.CharField(max_length=30, verbose_name='Tên phòng')
-    so_tang = models.IntegerField(verbose_name='Số tầng')
-    class Meta:
-        ordering = ['-id_phong']
-    def save(self, *args, **kwargs):
-        if not self.id_phong:
-            self.id_phong = Phong.objects.aggregate(Max('id_phong'))['id_phong__max']
-            if self.id_phong:
-                self.id_phong = 'P' + str(int(self.id_phong[1:]) + 1).zfill(4)
-            else:
-                self.id_phong = 'P0001'
-        super(Phong, self).save(*args, **kwargs)
     
+    class Meta:
+        ordering = ['-ten_phong']
+        verbose_name_plural = 'Phòng'
+        
     def __str__(self):
         return self.ten_phong
     
 class LoaiThietBi(models.Model):
-    id_loai_thiet_bi = models.CharField(max_length=10, primary_key=True, blank=True, null=False, unique=True, editable=False)
-    ten_loai_thiet_bi = models.CharField(max_length=30, verbose_name='Tên loại thiết bị')
+    ten_loaithietbi = models.CharField(max_length=30, verbose_name='Tên loại thiết bị')
+    
     class Meta:
-        ordering = ['-id_loai_thiet_bi']
-    def save(self, *args, **kwargs):
-        if not self.id_loai_thiet_bi:
-            self.id_loai_thiet_bi = LoaiThietBi.objects.aggregate(Max('id_loai_thiet_bi'))['id_loai_thiet_bi__max']
-            if self.id_loai_thiet_bi:
-                self.id_loai_thiet_bi = 'LTB' + str(int(self.id_loai_thiet_bi[3:]) + 1).zfill(4)
-            else:
-                self.id_loai_thiet_bi = 'LTB0001'
-        super(LoaiThietBi, self).save(*args, **kwargs)
+        ordering = ['-ten_loaithietbi']
+        verbose_name_plural = 'Loại thiết bị'
+        
     def __str__(self):
-        return self.ten_loai_thiet_bi
+        return self.ten_loaithietbi
     
 class ThietBi(models.Model):
     id_thiet_bi = models.CharField(max_length=10, primary_key=True, blank=True, null=False, unique=True, editable=False)
     ten_thiet_bi = models.CharField(max_length=30, verbose_name='Tên thiết bị')
-    loai_thiet_bi = models.ForeignKey(LoaiThietBi, on_delete=models.CASCADE, verbose_name='Loại thiết bị') # Thiết bị điện, thiết bị y tế, thiết bị văn phòng,...
-    phong = models.ForeignKey(Phong, on_delete=models.CASCADE, verbose_name='Phòng',)
+    loai_thiet_bi = models.ForeignKey(LoaiThietBi, on_delete=models.SET_NULL, null=True, verbose_name='Loại thiết bị')
+    phong = models.ForeignKey(Phong, on_delete=models.SET_NULL, null=True,blank= True, verbose_name='Phòng')
+    tang = models.ForeignKey(Tang, on_delete=models.SET_NULL, null=True,blank= True, verbose_name='Tầng')
     hinh_anh = models.ImageField(upload_to='images/', blank=False, null=False, verbose_name='Hình ảnh')
     ngay_mua = models.DateField(verbose_name='Ngày mua')
     gia_mua = models.IntegerField(verbose_name='Giá mua')
@@ -162,6 +163,7 @@ class ThietBi(models.Model):
     mo_ta = models.TextField(verbose_name='Mô tả', blank=True, null=True)
     class Meta:
         ordering = ['id_thiet_bi']
+        verbose_name_plural = 'Thiết bị'
     
     def save(self, *args, **kwargs):
         if not self.id_thiet_bi:
@@ -174,4 +176,5 @@ class ThietBi(models.Model):
     
     def __str__(self):
         return self.ten_thiet_bi
+
 

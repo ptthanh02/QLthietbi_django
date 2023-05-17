@@ -1,11 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
+from django.views.generic import CreateView, UpdateView, DeleteView
 from .models import Phong, ThietBi, LoaiThietBi
-from .forms import ThemThietBiForm
+from .forms import *
 
 def render_login(request):
     return render(request, 'dangnhap.html')
@@ -35,29 +36,55 @@ def perform_login(request):
             messages.error(request, "Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng thử lại!")
             return HttpResponseRedirect('/')
         
+def perform_logout(requet):
+    return HttpResponseRedirect('/')
+        
 def render_trangchinh(request):
     listThietBi = ThietBi.objects.all()
     listPhong = Phong.objects.all()
     return render(request,"quanly.html",{'listThietBi': listThietBi, 'listPhong': listPhong})
 
 def render_themthietbi(request):
-    summitted = False
+    form = ThemThietBiForm()
     if request.method == "POST":
         form = ThemThietBiForm(request.POST,request.FILES)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/themthietbi/?submitted=True')
-    else:
-        form = ThemThietBiForm
-        if 'submitted' in request.GET:
-            summitted = True
-    form = ThemThietBiForm
+            return redirect('QLthietbi_app:render_trangchinh')
     return render(request,"themtb.html", {'form': form}) 
+
+def render_capnhap(request, pk):
+    thietbi = get_object_or_404(ThietBi, pk=pk)
+    form = ThemThietBiForm(instance=thietbi)
+    if request.method == "POST":
+        form = ThemThietBiForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('QLthietbi_app:render_trangchinh')
+    return render(request,"themtb.html", {'form': form}) 
+
+# AJAX
+def load_phong(request):
+    tang_id = request.GET.get('tang_id')
+    listPhong = Phong.objects.filter(tang_id=tang_id).order_by('ten_phong')
+    return render(request, 'phong_dropdown_list_options.html', {'listPhong': listPhong})
+
+def render_chinhsuathietbi(request, id_thiet_bi):
+    thietbi = ThietBi.objects.get(id_thiet_bi=id_thiet_bi)
+    form = ThemThietBiForm(instance=thietbi)
+    if request.method == "POST":
+        form = ThemThietBiForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('QLthietbi_app:render_trangchinh')
+    return render(request,"chinhsuatb.html", {'form': form})
 
 def render_chitietthietbi(request, id_thiet_bi):
     thietbi = ThietBi.objects.get(id_thiet_bi=id_thiet_bi)
     phong = Phong.objects.get(id_phong=thietbi.phong.id_phong)
     return render(request,"chitiettb.html", {'thietbi': thietbi, 'phong': phong})
     
-def perform_logout(requet):
-    return HttpResponseRedirect('/')
+def render_xoathietbi(request, id_thiet_bi):
+    thietbi = ThietBi.objects.get(id_thiet_bi=id_thiet_bi)
+    thietbi.delete()
+    return redirect('QLthietbi_app:render_trangchinh')

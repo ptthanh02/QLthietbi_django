@@ -174,10 +174,10 @@
                      <tbody>
                         {% for ThietBi in listThietBi %}
                         <tr>
-                           <td>{{ThietBi.id_thiet_bi}}</td>
-                           <td>{{ThietBi.ten_thiet_bi}}</td>
-                           <td><img src="{{ThietBi.hinh_anh.url}}" width="100" height="100"></td>
-                           <td>Tầng {{ThietBi.phong.so_tang}}</td>
+                           <td><a href="{% url 'QLthietbi_app:render_chitietthietbi' ThietBi.id_thiet_bi %}" class="a-td">{{ThietBi.id_thiet_bi}}</a></td>
+                           <td ><a href="{% url 'QLthietbi_app:render_chitietthietbi' ThietBi.id_thiet_bi %}" class="a-td">{{ThietBi.ten_thiet_bi}}</a></td>
+                           <td><a href="{% url 'QLthietbi_app:render_chitietthietbi' ThietBi.id_thiet_bi %}" class="a-td"><img src="{{ThietBi.hinh_anh.url}}" width="100" height="100"></a></td>
+                           <td>Tầng {{ThietBi.tang}}</td>
                            <td>Phòng {{ThietBi.phong}}</td>
                            {% if ThietBi.tinh_trang == "hoatdong" %}
                            <td><span class="badge badge-success"><i class="fa fa-signal" aria-hidden="true"></i> Hoạt động</span></td>
@@ -188,8 +188,8 @@
                            {% endif %}
                            <td>
                               <a href="{% url 'QLthietbi_app:render_chitietthietbi' ThietBi.id_thiet_bi %}" class="btn btn-outline-dark"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
-                              <a href="#" class="btn btn-outline-dark"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                              <a href="#" class="btn btn-outline-dark"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                              <a href="{% url 'QLthietbi_app:render_chinhsuathietbi' ThietBi.id_thiet_bi %}" class="btn btn-outline-dark"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                              <a href="{% url 'QLthietbi_app:render_xoathietbi' ThietBi.id_thiet_bi %}" class="btn btn-outline-dark"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
                            </td>
                         </tr>
                         {% endfor %}

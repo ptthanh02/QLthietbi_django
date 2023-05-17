@@ -142,6 +142,16 @@ table-responsive.dataTable thead .sorting_desc_disabled:before {
 
 /* -------------------------------DataTable End-------------------------------------------- */
 
+.a-td {
+    color: #343a40;
+    text-decoration: none;
+}
+
+.a-td:hover {
+    color: #343a40;
+    text-decoration: none;
+}
+
 #body-row {
     margin-left:0;
     margin-right:0;

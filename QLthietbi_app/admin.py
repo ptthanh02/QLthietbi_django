@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
-from .models import Phong, LoaiThietBi, ThietBi
-#from .forms import ThietBiForm
+from .models import Phong,Tang, LoaiThietBi, ThietBi
 from django import forms
 
 class CustomUserAdmin(UserAdmin):
@@ -36,10 +35,18 @@ class ThietBiInline(admin.TabularInline):
 
 class PhongAdmin(admin.ModelAdmin):
     inlines = [ThietBiInline]
-    list_display = ('id_phong', 'ten_phong', 'so_tang')
+    list_display = ('ten_phong', 'tang')
+    list_filter = ('tang',)
+    search_fields = ('ten_phong', 'tang')
+    list_per_page = 10
+
+class TangAdmin(admin.ModelAdmin):
+    list_display = ('id', 'ten_tang')
+    list_per_page = 10
 
 class LoaiThietBiAdmin(admin.ModelAdmin):
-    list_display = ('id_loai_thiet_bi', 'ten_loai_thiet_bi')
+    list_display = ('id','ten_loaithietbi')
+    list_per_page = 10
 
 class ThietBiAdmin(admin.ModelAdmin):
     list_display = ['id_thiet_bi', 'ten_thiet_bi','hinh_anh', 'loai_thiet_bi', 'phong', 'ngay_mua', 'gia_mua', 'tinh_trang', 'ngay_bao_tri', 'mo_ta']
@@ -48,6 +55,7 @@ class ThietBiAdmin(admin.ModelAdmin):
     ordering = ('id_thiet_bi',)
     list_per_page = 10
 
+admin.site.register(Tang, TangAdmin)
 admin.site.register(Phong, PhongAdmin)
 admin.site.register(LoaiThietBi, LoaiThietBiAdmin)
 admin.site.register(ThietBi, ThietBiAdmin)
