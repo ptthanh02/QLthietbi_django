@@ -81,8 +81,7 @@ def render_chinhsuathietbi(request, id_thiet_bi):
 
 def render_chitietthietbi(request, id_thiet_bi):
     thietbi = ThietBi.objects.get(id_thiet_bi=id_thiet_bi)
-    phong = Phong.objects.get(id_phong=thietbi.phong.id_phong)
-    return render(request,"chitiettb.html", {'thietbi': thietbi, 'phong': phong})
+    return render(request,"chitiettb.html", {'thietbi': thietbi})
     
 def render_xoathietbi(request, id_thiet_bi):
     thietbi = ThietBi.objects.get(id_thiet_bi=id_thiet_bi)
