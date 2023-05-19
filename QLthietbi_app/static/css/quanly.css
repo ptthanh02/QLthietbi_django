@@ -168,6 +168,10 @@ table-responsive.dataTable thead .sorting_desc_disabled:before {
   background-color: #343a40; /* Thay đổi màu sắc khi checkbox được chọn */
 }
 
+.checkbox-large:checked:after {
+  color: #343a40; /* Thay đổi màu sắc của dấu check */
+}
+
 /* -------------------------------DataTable End-------------------------------------------- */
 
 .btn-dark {

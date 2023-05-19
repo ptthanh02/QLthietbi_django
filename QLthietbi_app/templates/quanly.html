@@ -244,16 +244,13 @@
             <a
               class="btn btn-dark"
               href="{% url 'QLthietbi_app:render_themthietbi' %}"
-              ><i class="fa fa-plus" aria-hidden="true"> Thêm thiết bị</i></a
-            >
-            <a class="btn btn-dark"
-              ><i class="fa fa-plus" aria-hidden="true"> Thêm phòng</i></a
+              ><i class="fa fa-plus" aria-hidden="true"> Thêm mới</i></a
             >
             <button
-              type="submit"
+              type="button"
               name="delete"
-              value="Delete Items"
               class="btn btn-dark"
+              onclick="deleteSelectedItems()"
             >
               <i class="fa fa-trash-o" aria-hidden="true"> Xóa nhiều</i>
             </button>
@@ -278,6 +275,7 @@
                     </tr>
                   </thead>
                   <tbody>
+                    {% csrf_token %}
                     {% for ThietBi in listThietBi %}
                     <tr>
                       <td>
@@ -376,10 +374,41 @@
         </div>
         <!-- body-row END -->
         <!-- Data Table -->
-        <!-- Tạo script để lấy id từ checkbox tạo thành list gửi cho post -->
         <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
         <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+        <script>
+          function deleteSelectedItems() {
+            if (confirm("Bạn có chắc chắn muốn xóa?")) {
+              var selectedItems = [];
+              var csrf=$("input[name=csrfmiddlewaretoken]").val();
+              $("input:checkbox[name=instance]:checked").each(function () {
+                selectedItems.push($(this).val());
+              });
+              if (selectedItems.length == 0) {
+                alert("Bạn chưa chọn thiết bị nào!");
+                return;
+              } else {
+                console.log(selectedItems);
+                $.ajax({
+                  url: ".",
+                  type: "POST",
+                  data: {
+                    selectedItems,
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                  },
+                  success: function (data) {
+                    if (data["status"] == "success") {
+                      location.reload();
+                    } else {
+                      location.reload();
+                    }
+                  },
+                });
+              }
+            }
+          }
+        </script>
         <script>
           $(document).ready(function () {
             $("#device-table").DataTable({

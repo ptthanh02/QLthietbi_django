@@ -8,6 +8,7 @@ from .models import Phong, ThietBi, LoaiThietBi
 from .forms import *
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 
 def render_login(request):
     return render(request, 'dangnhap.html')
@@ -40,10 +41,23 @@ def perform_login(request):
 def perform_logout(requet):
     return HttpResponseRedirect('/')
         
-def render_trangchinh(request):
-    listThietBi = ThietBi.objects.all()
-    listPhong = Phong.objects.all()
-    return render(request,"quanly.html",{'listThietBi': listThietBi, 'listPhong': listPhong})
+# def render_trangchinh(request):
+#     listThietBi = ThietBi.objects.all()
+#     return render(request,"quanly.html",{'listThietBi': listThietBi})
+
+class ThietBi_view(View):
+    def get(self, request):
+        listThietBi = ThietBi.objects.all()
+        listPhong = Phong.objects.all()
+        return render(request,"quanly.html",{'listThietBi': listThietBi, 'listPhong': listPhong})
+    
+    def post(self, request):
+        if request.method == "POST":
+            selected_rows = request.POST.getlist('selectedItems[]')
+            for id in selected_rows:
+                thietbi = ThietBi.objects.get(pk=id)
+                thietbi.delete()
+        return redirect('QLthietbi_app:render_trangchinh')
 
 def render_themthietbi(request):
     form = ThemThietBiForm()
@@ -74,7 +88,7 @@ def render_chinhsuathietbi(request, id_thiet_bi):
     thietbi = ThietBi.objects.get(id_thiet_bi=id_thiet_bi)
     form = ThemThietBiForm(instance=thietbi)
     if request.method == "POST":
-        form = ThemThietBiForm(request.POST,request.FILES)
+        form = ThemThietBiForm(request.POST,request.FILES,instance=thietbi)
         if form.is_valid():
             form.save()
             return redirect('QLthietbi_app:render_trangchinh')
@@ -90,11 +104,11 @@ def render_xoathietbi(request, id_thiet_bi):
     return redirect('QLthietbi_app:render_trangchinh')
 
 @csrf_exempt
-def xoa_nhieuthietbi(request):
+def render_xoanhieutthietbi(request):
     if request.method == "POST":
-        id_list = request.POST.getlist('instance')
-        print(id_list)
-        for id_thiet_bi in id_list:
-            thietbi = ThietBi.objects.get(id_thiet_bi=id_thiet_bi)
+        selected_rows = request.POST.getlist('list')
+        for id in selected_rows:
+            thietbi = ThietBi.objects.get(id_thiet_bi=id)
             thietbi.delete()
-        return redirect('QLthietbi_app:render_trangchinh')
+    return redirect('QLthietbi_app:render_trangchinh')
+

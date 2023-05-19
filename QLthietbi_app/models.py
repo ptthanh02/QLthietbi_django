@@ -145,12 +145,12 @@ class LoaiThietBi(models.Model):
         return self.ten_loaithietbi
     
 class ThietBi(models.Model):
-    id_thiet_bi = models.CharField(max_length=10, primary_key=True, blank=True, null=False, unique=True, editable=False)
+    id_thiet_bi = models.CharField(max_length=10, primary_key=True, blank=False, null=False, unique=True, editable=False)
     ten_thiet_bi = models.CharField(max_length=30, verbose_name='Tên thiết bị')
     loai_thiet_bi = models.ForeignKey(LoaiThietBi, on_delete=models.SET_NULL, null=True, verbose_name='Loại thiết bị')
     phong = models.ForeignKey(Phong, on_delete=models.SET_NULL, null=True,blank= True, verbose_name='Phòng')
     tang = models.ForeignKey(Tang, on_delete=models.SET_NULL, null=True,blank= True, verbose_name='Tầng')
-    hinh_anh = models.ImageField(upload_to='images/', blank=False, null=False, verbose_name='Hình ảnh')
+    hinh_anh = models.ImageField(upload_to='images/', blank=True, null=True, verbose_name='Hình ảnh')
     ngay_mua = models.DateField(verbose_name='Ngày mua')
     gia_mua = models.IntegerField(verbose_name='Giá mua')
     tinh_trang_choices = [
@@ -162,7 +162,6 @@ class ThietBi(models.Model):
     ngay_bao_tri = models.DateField(verbose_name='Ngày bảo trì',blank=True, null=True)
     mo_ta = models.TextField(verbose_name='Mô tả', blank=True, null=True)
     class Meta:
-        ordering = ['id_thiet_bi']
         verbose_name_plural = 'Thiết bị'
     
     def save(self, *args, **kwargs):
