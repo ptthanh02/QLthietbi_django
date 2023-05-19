@@ -4,9 +4,10 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
-from django.views.generic import CreateView, UpdateView, DeleteView
 from .models import Phong, ThietBi, LoaiThietBi
 from .forms import *
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 def render_login(request):
     return render(request, 'dangnhap.html')
@@ -87,3 +88,13 @@ def render_xoathietbi(request, id_thiet_bi):
     thietbi = ThietBi.objects.get(id_thiet_bi=id_thiet_bi)
     thietbi.delete()
     return redirect('QLthietbi_app:render_trangchinh')
+
+@csrf_exempt
+def xoa_nhieuthietbi(request):
+    if request.method == "POST":
+        id_list = request.POST.getlist('instance')
+        print(id_list)
+        for id_thiet_bi in id_list:
+            thietbi = ThietBi.objects.get(id_thiet_bi=id_thiet_bi)
+            thietbi.delete()
+        return redirect('QLthietbi_app:render_trangchinh')
