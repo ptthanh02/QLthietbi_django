@@ -50,3 +50,20 @@ body {
   margin-top: 150px;
   margin-bottom: auto;
 }
+
+/* Bread crumbs */
+.breadcrumb {
+  background-color: #e6e6e6;
+  color : #343a40;
+  padding: 0%;
+  margin: 0%;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: ">";
+  color: #343a40;
+}
+
+.breadcrumb-item a {
+  color: #343a40;
+}
