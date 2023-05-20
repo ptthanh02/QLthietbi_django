@@ -9,6 +9,62 @@ from .forms import *
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from datetime import datetime
+import csv
+import io
+from .filters import ThietBiFilter
+
+
+def tao_file_txt(request):
+    response = HttpResponse(content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename="thietbi.txt"'
+    listThietBi = ThietBi.objects.all()
+    lines = []
+    for thietbi in listThietBi:
+        ngay_mua = thietbi.ngay_mua.strftime('%d/%m/%Y') if thietbi.ngay_mua else ''
+        ngay_bao_tri = thietbi.ngay_bao_tri.strftime('%d/%m/%Y') if thietbi.ngay_bao_tri else ''
+        lines.append(f'Tên thiết bị: {thietbi.ten_thiet_bi}\n'
+                     f'Loại thiết bị: {thietbi.loai_thiet_bi.ten_loaithietbi}\n'
+                     f'Phòng: {thietbi.phong.ten_phong}\n'
+                     f'Tầng: {thietbi.tang.ten_tang}\n'
+                     f'Ngày mua: {ngay_mua}\n'
+                     f'Giá mua: {thietbi.gia_mua}\n'
+                     f'Tình trạng: {thietbi.tinh_trang}\n'
+                     f'Ngày bảo trì: {ngay_bao_tri}\n'
+                     f'Mô tả: {thietbi.mo_ta}\n\n')
+    response.writelines(lines)
+    return response
+
+def tao_file_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="thietbi.csv"'
+
+    listThietBi = ThietBi.objects.all()
+
+    csv_buffer = io.StringIO()
+    writer = csv.writer(csv_buffer)
+    writer.writerow(['Tên thiết bị', 'Loại thiết bị', 'Phòng', 'Tầng', 'Ngày mua', 'Giá mua', 'Tình trạng', 'Ngày bảo trì', 'Mô tả'])
+
+    for thietbi in listThietBi:
+        ngay_mua = thietbi.ngay_mua.strftime('%d/%m/%Y') if thietbi.ngay_mua else ''
+        ngay_bao_tri = thietbi.ngay_bao_tri.strftime('%d/%m/%Y') if thietbi.ngay_bao_tri else ''
+        writer.writerow([
+            thietbi.ten_thiet_bi,
+            thietbi.loai_thiet_bi.ten_loaithietbi,
+            thietbi.phong.ten_phong,
+            thietbi.tang.ten_tang,
+            ngay_mua,
+            thietbi.gia_mua,
+            thietbi.tinh_trang,
+            ngay_bao_tri,
+            thietbi.mo_ta
+        ])
+
+    csv_buffer.seek(0)
+    response.write(csv_buffer.getvalue().encode('utf-8-sig'))
+
+    return response
 
 def render_login(request):
     return render(request, 'dangnhap.html')
@@ -48,8 +104,10 @@ def perform_logout(requet):
 class ThietBi_view(View):
     def get(self, request):
         listThietBi = ThietBi.objects.all()
-        listPhong = Phong.objects.all()
-        return render(request,"quanly.html",{'listThietBi': listThietBi, 'listPhong': listPhong})
+        thietbi_count = listThietBi.count()
+        myFilter = ThietBiFilter(request.GET, queryset=listThietBi)
+        listThietBi = myFilter.qs
+        return render(request,"quanly.html",{'listThietBi': listThietBi, 'myFilter': myFilter})
     
     def post(self, request):
         if request.method == "POST":

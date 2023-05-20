@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'QLthietbi_app',
     'dal',
     'dal_select2',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

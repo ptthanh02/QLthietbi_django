@@ -9,6 +9,12 @@
 - Chạy test: python manage.py test
 - Mở shell: python manage.py shell
 
+requirement: pip install -r requirements.txt
+django
+pillow
+django-crispy-forms
+django-filter
+
 ---------------------Lệnh Python Shell để Insert Data---------------------------
 from QLthietbi_app.models import QuanLy, CustomUser, NhanVien, KyThuatVien
 from django.utils import timezone

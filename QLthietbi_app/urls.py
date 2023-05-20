@@ -9,11 +9,13 @@ urlpatterns = [
     path('login', views.perform_login, name='perform_login'),
     path('logout', views.perform_logout, name='perform_logout'),
     path('quanly/', views.ThietBi_view.as_view(), name='render_trangchinh'),
+    path('tao_file.txt/', views.tao_file_txt, name='tao_file_txt'),
+    path('tao_file.csv/', views.tao_file_csv, name='tao_file_csv'),
     
     path('themthietbi/', views.render_themthietbi, name='render_themthietbi'),
     path('<str:pk>/', views.render_capnhap, name='render_capnhap'), # cập nhập thông tin thiết bị lúc thay đổi phòng
     path('ajax/laythongtinphong/', views.load_phong, name='ajax_load_phong'),
-   
+    
     path('thietbi/<str:id_thiet_bi>', views.render_chitietthietbi, name='render_chitietthietbi'),
     path('chinhsuathietbi/<str:id_thiet_bi>', views.render_chinhsuathietbi, name='render_chinhsuathietbi'),
     path('xoathietbi/<str:id_thiet_bi>', views.render_xoathietbi, name='render_xoathietbi'),

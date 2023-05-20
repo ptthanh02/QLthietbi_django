@@ -254,6 +254,20 @@
             >
               <i class="fa fa-trash-o" aria-hidden="true"> Xóa nhiều</i>
             </button>
+            <a
+              class="btn btn-dark"
+              href="{% url 'QLthietbi_app:tao_file_txt' %}"
+              ><i class="fa fa-file-text-o" aria-hidden="true">
+                Tạo file.txt</i
+              ></a
+            >
+            <a
+              class="btn btn-dark"
+              href="{% url 'QLthietbi_app:tao_file_csv' %}"
+              ><i class="fa fa-file-excel-o" aria-hidden="true">
+                Tạo file.csv</i
+              ></a
+            >
             <div class="row px-1 py-3">
               <div class="table-responsive">
                 <table
@@ -262,6 +276,26 @@
                   cellspacing="0"
                   width="100%"
                 >
+                  <caption>
+                    <form
+                      method="get"
+                      id="thietbifilter"
+                      data-device-url="{% url 'QLthietbi_app:ajax_load_phong' %}"
+                    >
+                      {% csrf_token %} {% for field in myFilter.form %}
+                      <a>&nbsp{{ field.label_tag }}</a>&nbsp{{ field }}&nbsp 
+                      {% endfor %}
+                      <button type="submit" class="btn btn-dark">
+                        <i class="fa fa-filter" aria-hidden="true"> Lọc</i>
+                      </button>
+                      <a
+                        href="{% url 'QLthietbi_app:render_trangchinh' %}"
+                        class="btn btn-dark"
+                        ><i class="fa fa-refresh" aria-hidden="true"></i> Làm
+                        mới</a
+                      >
+                    </form>
+                  </caption>
                   <thead class="thead-dark">
                     <tr id="chk-th">
                       <th>Mã thiết bị</th>
@@ -275,8 +309,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {% csrf_token %}
-                    {% for ThietBi in listThietBi %}
+                    {% csrf_token %} {% for ThietBi in listThietBi %}
                     <tr>
                       <td>
                         <input
@@ -292,15 +325,6 @@
                           {{ThietBi.id_thiet_bi}}
                         </a>
                       </td>
-                      {% comment %}
-                      <td>
-                        <a
-                          href="{% url 'QLthietbi_app:render_chitietthietbi' ThietBi.id_thiet_bi %}"
-                          class="a-td"
-                          >{{ThietBi.id_thiet_bi}}</a
-                        >
-                      </td>
-                      {% endcomment %}
                       <td>
                         <a
                           href="{% url 'QLthietbi_app:render_chitietthietbi' ThietBi.id_thiet_bi %}"
@@ -347,11 +371,17 @@
                         <a
                           href="{% url 'QLthietbi_app:render_chitietthietbi' ThietBi.id_thiet_bi %}"
                           class="btn btn-outline-dark"
+                          data-toggle="tooltip"
+                          data-placement="top"
+                          title="Thông tin thiết bị"
                           ><i class="fa fa-info-circle" aria-hidden="true"></i
                         ></a>
                         <a
                           href="{% url 'QLthietbi_app:render_chinhsuathietbi' ThietBi.id_thiet_bi %}"
                           class="btn btn-outline-dark"
+                          data-toggle="tooltip"
+                          data-placement="top"
+                          title="Chỉnh sửa thiết bị"
                           ><i
                             class="fa fa-pencil-square-o"
                             aria-hidden="true"
@@ -360,7 +390,18 @@
                         <a
                           href="{% url 'QLthietbi_app:render_xoathietbi' ThietBi.id_thiet_bi %}"
                           class="btn btn-outline-dark"
+                          data-toggle="tooltip"
+                          data-placement="top"
+                          title="Xóa thiết bị"
                           ><i class="fa fa-trash-o" aria-hidden="true"></i
+                        ></a>
+                        <a
+                          href="#"
+                          class="btn btn-outline-dark"
+                          data-toggle="tooltip"
+                          data-placement="top"
+                          title="Tạo báo cáo thiết bị"
+                          ><i class="fa fa-wpforms" aria-hidden="true"></i
                         ></a>
                       </td>
                     </tr>
@@ -374,6 +415,28 @@
         </div>
         <!-- body-row END -->
         <!-- Data Table -->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script>
+          $("#id_tang").change(function () {
+            var url = $("#thietbifilter").attr("data-device-url");
+            var tangId = $(this).val();
+
+            $.ajax({
+              url: url,
+              data: {
+                tang_id: tangId,
+              },
+              success: function (data) {
+                $("#id_phong").html(data);
+              },
+            });
+          });
+        </script>
+        <script>
+          $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+          });
+        </script>
         <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
         <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
@@ -381,7 +444,7 @@
           function deleteSelectedItems() {
             if (confirm("Bạn có chắc chắn muốn xóa?")) {
               var selectedItems = [];
-              var csrf=$("input[name=csrfmiddlewaretoken]").val();
+              var csrf = $("input[name=csrfmiddlewaretoken]").val();
               $("input:checkbox[name=instance]:checked").each(function () {
                 selectedItems.push($(this).val());
               });

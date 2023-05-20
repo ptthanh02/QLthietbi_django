@@ -148,7 +148,9 @@ table-responsive.dataTable thead .sorting_desc_disabled:before {
 .dataTables_wrapper table.dataTable th {
   text-align: center;
   font-family: "Source Code Pro", monospace;
+  vertical-align: middle;
 }
+
 
 .a-td {
   color: #343a40;
@@ -172,6 +174,11 @@ table-responsive.dataTable thead .sorting_desc_disabled:before {
   color: #343a40; /* Thay đổi màu sắc của dấu check */
 }
 
+caption {
+  caption-side: top;
+  text-align: right;
+  color: #343a40;
+}
 /* -------------------------------DataTable End-------------------------------------------- */
 
 .btn-dark {
