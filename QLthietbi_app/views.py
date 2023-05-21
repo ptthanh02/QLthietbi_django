@@ -14,7 +14,7 @@ from datetime import datetime
 import csv
 import io
 from .filters import ThietBiFilter
-
+from django.template import loader
 
 def tao_file_txt(request):
     response = HttpResponse(content_type='text/plain')
@@ -96,27 +96,28 @@ def perform_login(request):
         
 def perform_logout(requet):
     return HttpResponseRedirect('/')
-        
-# def render_trangchinh(request):
-#     listThietBi = ThietBi.objects.all()
-#     return render(request,"quanly.html",{'listThietBi': listThietBi})
 
 class ThietBi_view(ListView, FormView):
-    def get(self, request):
-        form = ThemThietBiForm()
-        listThietBi = ThietBi.objects.all()
-        # thietbi_count = listThietBi.count()
-        myFilter = ThietBiFilter(request.GET, queryset=listThietBi)
-        listThietBi = myFilter.qs
-        return render(request,"quanly.html",{'listThietBi': listThietBi, 'myFilter': myFilter, 'form': form})
-    
+    template_name = "quanly.html"
+    model = ThietBi
+    form_class = ThemThietBiForm
+    success_url = reverse_lazy("QLthietbi_app:render_trangchinh")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        listThietBi = self.get_queryset()
+        myFilter = ThietBiFilter(self.request.GET, queryset=listThietBi)
+        context['listThietBi'] = myFilter.qs
+        context['myFilter'] = myFilter
+        context['form'] = ThemThietBiForm()
+        return context
+
     def post(self, request):
-        if request.method == "POST":
-            selected_rows = request.POST.getlist('selectedItems[]')
-            for id in selected_rows:
-                thietbi = ThietBi.objects.get(pk=id)
-                thietbi.delete()
-        return redirect('QLthietbi_app:render_trangchinh')
+        selected_rows = request.POST.getlist('selectedItems[]')
+        for id in selected_rows:
+            thietbi = ThietBi.objects.get(pk=id)
+            thietbi.delete()
+        return redirect(self.success_url)
     
 def render_themthietbi(request):
     form = ThemThietBiForm()
@@ -137,13 +138,11 @@ def render_capnhap(request, pk):
             return redirect('QLthietbi_app:render_trangchinh')
     return render(request,"themtb.html", {'form': form}) 
 
-# AJAX
-def load_phong(request):
-    tang_id = request.GET.get('tang_id')
-    listPhong = Phong.objects.filter(tang_id=tang_id).order_by('ten_phong')
-    return render(request, 'phong_dropdown_list_options.html', {'listPhong': listPhong})
-
 def render_chinhsuathietbi(request, id_thiet_bi):
+    listThietBi = ThietBi.objects.all()
+    myFilter = ThietBiFilter(request.GET, queryset=listThietBi)
+    listThietBi = myFilter.qs
+    pk = id_thiet_bi
     thietbi = ThietBi.objects.get(id_thiet_bi=id_thiet_bi)
     form = ThemThietBiForm(instance=thietbi)
     if request.method == "POST":
@@ -151,7 +150,13 @@ def render_chinhsuathietbi(request, id_thiet_bi):
         if form.is_valid():
             form.save()
             return redirect('QLthietbi_app:render_trangchinh')
-    return render(request,"chinhsuatb.html", {'form': form})
+    return render(request,"chinhsuatb.html",{'listThietBi': listThietBi, 'myFilter': myFilter, 'form': form, 'pk': pk})
+        
+# AJAX
+def load_phong(request):
+    tang_id = request.GET.get('tang_id')
+    listPhong = Phong.objects.filter(tang_id=tang_id).order_by('ten_phong')
+    return render(request, 'phong_dropdown_list_options.html', {'listPhong': listPhong})
 
 def render_chitietthietbi(request, id_thiet_bi):
     thietbi = ThietBi.objects.get(id_thiet_bi=id_thiet_bi)

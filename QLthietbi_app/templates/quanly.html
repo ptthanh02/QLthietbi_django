@@ -232,14 +232,15 @@
       <div class="col py-2">
         <div class="row element-button">
           <div class="col-sm px-3 py-1 pr-1">
-            {% comment %} <a
+            {% comment %}
+            <a
               class="btn btn-dark"
               href="{% url 'QLthietbi_app:render_themthietbi' %}"
               ><i class="fa fa-plus" aria-hidden="true"> Thêm mới</i></a
-            > {% endcomment %}
+            >
+            {% endcomment %}
             <button
               type="button"
-              name="delete"
               class="btn btn-dark"
               data-toggle="modal"
               data-target="#thietbiModal"
@@ -268,7 +269,7 @@
                 Tạo file.csv</i
               ></a
             >
-            
+
             <div class="row px-1 py-3">
               <div class="table-responsive">
                 <table
@@ -436,12 +437,11 @@
               },
             });
           });
-
           $("#thietbiform #id_tang").change(function () {
             var url = $("#thietbiform").attr("data-device-url");
             var tangId = $(this).val();
             if (tangId == "") {
-              $("#thietbifilter #id_phong").html(
+              $("#thietbiform #id_phong").html(
                 "<option value=''>---------</option>"
               );
               return;
@@ -456,22 +456,40 @@
               },
             });
           });
-
+          $("#suathietbiform #id_tang").change(function () {
+            var url = $("#suathietbiform").attr("data-device-url");
+            var tangId = $(this).val();
+            if (tangId == "") {
+              $("#suathietbiform #id_phong").html(
+                "<option value=''>---------</option>"
+              );
+              return;
+            }
+            $.ajax({
+              url: url,
+              data: {
+                tang_id: tangId,
+              },
+              success: function (data) {
+                $("#suathietbiform #id_phong").html(data);
+              },
+            });
+          });
           $.when(
             $("#thietbifilter #id_tang").trigger("change"),
-            $("#thietbiform #id_tang").trigger("change")
-          ).done(function (filter_data, them_data) {
+            $("#thietbiform #id_tang").trigger("change"),
+            $("#suathietbiform #id_tang").trigger("change")
+          ).done(function (filter_data, them_data, sua_data) {
             console.log(filter_data);
             console.log(them_data);
+            console.log(sua_data);
           });
         </script>
         <script>
-          $("#myModal").on("shown.bs.modal", function () {});
           $(function () {
             $('[data-toggle="tooltip"]').tooltip();
           });
         </script>
-
         <script>
           function deleteSelectedItems() {
             if (confirm("Bạn có chắc chắn muốn xóa?")) {

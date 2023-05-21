@@ -1,4 +1,4 @@
-{% load static %}
+{% load static %} {%load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -22,6 +22,10 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css"
     />
     <link rel="stylesheet" href="../static/css/quanly.css" />
     <title>Trang chủ | Quản lý thiết bị</title>
@@ -54,15 +58,18 @@
       </a>
       <!-- Site map -->
       <ol class="breadcrumb">
+        {% comment %}
         <li class="breadcrumb-item">
-          <a href="{% url 'QLthietbi_app:render_trangchinh' %}"
-            ><i class="fa fa-home" aria-hidden="true"></i> Quản lý thiết bị</a
+          <a href="#"
+            ><i class="fa fa-home" aria-hidden="true"></i> Trang chính</a
           >
         </li>
+        {% endcomment %}
         <li class="breadcrumb-item active" aria-current="page">
-          Chỉnh sửa thiết bị {{thietbi.id_thiet_bi}}
+          <i class="fa fa-home" aria-hidden="true"></i> Quản lý thiết bị
         </li>
       </ol>
+      <!-- Site map -->
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item dropdown">
@@ -105,7 +112,7 @@
           <li
             class="list-group-item sidebar-separator-title text-muted d-flex align-items-center menu-collapsed"
           >
-            <small>MAIN MENU</small>
+            <small>TRANG CHỦ</small>
           </li>
           <!-- /END Separator -->
           <!-- Menu with submenu -->
@@ -179,7 +186,7 @@
           <li
             class="list-group-item sidebar-separator-title text-muted d-flex align-items-center menu-collapsed"
           >
-            <small>OPTIONS</small>
+            <small>Cài đặt</small>
           </li>
           <!-- /END Separator -->
           <a href="#" class="bg-dark list-group-item list-group-item-action">
@@ -221,103 +228,326 @@
       </div>
       <!-- sidebar-container END -->
       <!-- MAIN -->
-      <div class="col">
-        <h1>Chỉnh sửa thiết bị {{thietbi.id_thiet_bi}}</h1>
-        <hr />
-        <a
-          href="{% url 'QLthietbi_app:render_trangchinh' %}"
-          class="btn btn-dark"
-          >Quay lại</a
-        >
-        <br /><br />
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">
-                    Thông tin thiết bị {{thietbi.id_thiet_bi}}
-                  </h5>
-                  <hr />
-                  <form
-                    action=""
-                    method="post"
-                    enctype="multipart/form-data"
-                    id="thietbiform"
-                    data-device-url="{% url 'QLthietbi_app:ajax_load_phong' %}"
-                  >
-                    {% csrf_token %} {{form.as_p}}
-                    <button type="submit" value="Update" class="btn btn-dark">
-                      Lưu
-                    </button>
-                  </form>
-                </div>
+      <div class="col py-2">
+        <div class="row element-button">
+          <div class="col-sm px-3 py-1 pr-1">
+            <button
+              type="button"
+              class="btn btn-dark"
+              data-toggle="modal"
+              data-target="#thietbiModal"
+            >
+              <i class="fa fa-plus" aria-hidden="true"> Thêm mới</i>
+            </button>
+            <button
+              type="button"
+              name="delete"
+              class="btn btn-dark"
+              onclick="deleteSelectedItems()"
+            >
+              <i class="fa fa-trash-o" aria-hidden="true"> Xóa nhiều</i>
+            </button>
+            <a
+              class="btn btn-dark"
+              href="{% url 'QLthietbi_app:tao_file_txt' %}"
+              ><i class="fa fa-file-text-o" aria-hidden="true">
+                Tạo file.txt</i
+              ></a
+            >
+            <a
+              class="btn btn-dark"
+              href="{% url 'QLthietbi_app:tao_file_csv' %}"
+              ><i class="fa fa-file-excel-o" aria-hidden="true">
+                Tạo file.csv</i
+              ></a
+            >
+            {% include "chinhsua_modal.html" %}
+            <div class="row px-1 py-3">
+              <div class="table-responsive">
+                <table
+                  id="device-table"
+                  class="table table-sm table-striped bg-light table-condensed table-bordered"
+                  cellspacing="0"
+                  width="100%"
+                >
+                  <caption>
+                    <form
+                      method="get"
+                      id="thietbifilter"
+                      data-device-url="{% url 'QLthietbi_app:ajax_load_phong' %}"
+                    >
+                      {% csrf_token %} {% for field in myFilter.form %}
+                      <a>&nbsp{{ field.label_tag }}</a>&nbsp{{ field }}&nbsp
+                      {%endfor %}
+                      <button type="submit" class="btn btn-dark">
+                        <i class="fa fa-filter" aria-hidden="true"> Lọc</i>
+                      </button>
+                      <a
+                        href="{% url 'QLthietbi_app:render_trangchinh' %}"
+                        class="btn btn-dark"
+                        ><i class="fa fa-refresh" aria-hidden="true"></i> Làm
+                        mới</a
+                      >
+                    </form>
+                  </caption>
+                  <thead class="thead-dark">
+                    <tr id="chk-th">
+                      <th>Mã thiết bị</th>
+                      <th>Tên thiết bị</th>
+                      <th>Hình ảnh</th>
+                      <th>Loại thiết bị</th>
+                      <th>Tầng</th>
+                      <th>Phòng</th>
+                      <th>Trạng thái</th>
+                      <th>Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% csrf_token %} {% for ThietBi in listThietBi %}
+                    <tr>
+                      <td>
+                        <input
+                          class="form-check-input checkbox-large"
+                          type="checkbox"
+                          name="instance"
+                          value="{{ThietBi.id_thiet_bi}}"
+                        />
+                        <a
+                          href="{% url 'QLthietbi_app:render_chitietthietbi' ThietBi.id_thiet_bi %}"
+                          class="a-td"
+                        >
+                          {{ThietBi.id_thiet_bi}}
+                        </a>
+                      </td>
+                      <td>
+                        <a
+                          href="{% url 'QLthietbi_app:render_chitietthietbi' ThietBi.id_thiet_bi %}"
+                          class="a-td"
+                          >{{ThietBi.ten_thiet_bi}}</a
+                        >
+                      </td>
+                      <td>
+                        <a
+                          href="{% url 'QLthietbi_app:render_chitietthietbi' ThietBi.id_thiet_bi %}"
+                          class="a-td"
+                          ><img
+                            src="{{ThietBi.hinh_anh.url}}"
+                            width="100"
+                            height="100"
+                        /></a>
+                      </td>
+                      <td>{{ThietBi.loai_thiet_bi}}</td>
+                      <td>Tầng {{ThietBi.tang}}</td>
+                      <td>Phòng {{ThietBi.phong}}</td>
+                      {% if ThietBi.tinh_trang == "hoatdong" %}
+                      <td>
+                        <span class="badge badge-success"
+                          ><i class="fa fa-signal" aria-hidden="true"></i> Hoạt
+                          động</span
+                        >
+                      </td>
+                      {% elif ThietBi.tinh_trang == "dangbaotri" %}
+                      <td>
+                        <span class="badge badge-warning"
+                          ><i class="fa fa-cog" aria-hidden="true"></i> Bảo
+                          trì</span
+                        >
+                      </td>
+                      {% else %}
+                      <td>
+                        <span class="badge badge-danger"
+                          ><i class="fa fa-spinner" aria-hidden="true"></i>
+                          Hỏng</span
+                        >
+                      </td>
+                      {% endif %}
+                      <td>
+                        <a
+                          href="{% url 'QLthietbi_app:render_chitietthietbi' ThietBi.id_thiet_bi %}"
+                          class="btn btn-outline-dark"
+                          data-toggle="tooltip"
+                          data-placement="top"
+                          title="Thông tin thiết bị"
+                          ><i class="fa fa-info-circle" aria-hidden="true"></i
+                        ></a>
+                        <a
+                          href="#"
+                          class="btn btn-outline-dark"
+                          data-toggle="tooltip"
+                          data-placement="top"
+                          title="Chỉnh sửa thiết bị"
+                          ><i
+                            class="fa fa-pencil-square-o"
+                            aria-hidden="true"
+                          ></i
+                        ></a>
+                        <a
+                          href="{% url 'QLthietbi_app:render_xoathietbi' ThietBi.id_thiet_bi %}"
+                          class="btn btn-outline-dark"
+                          data-toggle="tooltip"
+                          data-placement="top"
+                          title="Xóa thiết bị"
+                          ><i class="fa fa-trash-o" aria-hidden="true"></i
+                        ></a>
+                        <a
+                          href="#"
+                          class="btn btn-outline-dark"
+                          data-toggle="tooltip"
+                          data-placement="top"
+                          title="Tạo báo cáo thiết bị"
+                          ><i class="fa fa-wpforms" aria-hidden="true"></i
+                        ></a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
+          <!-- Main Col END -->
         </div>
-      </div>
-      <!-- body-row END -->
-      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-      <script>
-        $("#id_tang").change(function () {
-          var url = $("#thietbiform").attr("data-device-url");
-          var tangId = $(this).val();
-
-          $.ajax({
-            url: url,
-            data: {
-              tang_id: tangId,
-            },
-            success: function (data) {
-              $("#id_phong").html(data);
-            },
+        <!-- body-row END -->
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script>
+          $("#suathietbiform #id_tang").change(function () {
+            var url = $("#suathietbiform").attr("data-device-url");
+            var tangId = $(this).val();
+            if (tangId == "") {
+              $("#suathietbiform #id_phong").html(
+                "<option value=''>---------</option>"
+              );
+              return;
+            }
+            $.ajax({
+              url: url,
+              data: {
+                tang_id: tangId,
+              },
+              success: function (data) {
+                $("#suathietbiform #id_phong").html(data);
+              },
+            });
           });
-          /*
-               let html_data = '<option value="">---------</option>';
-               data.forEach(function (phong) {
-                  html_data += `<option value="${phong.id}">${phong.ten_phong}</option>`;
-               });
-               console.log(html_data);
-               $("#id_phong").html(html_data);
-               */
-        });
-      </script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
-      <script>
-        // Hide submenus
-        $("#body-row .collapse").collapse("hide");
-
-        // Collapse/Expand icon
-        $("#collapse-icon").addClass("fa-angle-double-left");
-
-        // Collapse click
-        $("[data-toggle=sidebar-colapse]").click(function () {
-          SidebarCollapse();
-        });
-
-        function SidebarCollapse() {
-          $(".menu-collapsed").toggleClass("d-none");
-          $(".sidebar-submenu").toggleClass("d-none");
-          $(".submenu-icon").toggleClass("d-none");
-          $("#sidebar-container").toggleClass(
-            "sidebar-expanded sidebar-collapsed"
-          );
-
-          // Treating d-flex/d-none on separators with title
-          var SeparatorTitle = $(".sidebar-separator-title");
-          if (SeparatorTitle.hasClass("d-flex")) {
-            SeparatorTitle.removeClass("d-flex");
-          } else {
-            SeparatorTitle.addClass("d-flex");
+        </script>
+        <script>
+          $(document).ready(function () {
+            $("#suathietbiModal").modal("show");
+          });
+          $(document).ready(function () {
+            $("#suathietbiModal").on("hidden.bs.modal", function (e) {
+              window.location.href =
+                '{% url "QLthietbi_app:render_trangchinh" %}';
+            });
+          });
+          $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+          });
+        </script>
+        <script>
+          function deleteSelectedItems() {
+            if (confirm("Bạn có chắc chắn muốn xóa?")) {
+              var selectedItems = [];
+              var csrf = $("input[name=csrfmiddlewaretoken]").val();
+              $("input:checkbox[name=instance]:checked").each(function () {
+                selectedItems.push($(this).val());
+              });
+              if (selectedItems.length == 0) {
+                alert("Bạn chưa chọn thiết bị nào!");
+                return;
+              } else {
+                console.log(selectedItems);
+                $.ajax({
+                  url: ".",
+                  type: "POST",
+                  data: {
+                    selectedItems,
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                  },
+                  success: function (data) {
+                    if (data["status"] == "success") {
+                      location.reload();
+                    } else {
+                      location.reload();
+                    }
+                  },
+                });
+              }
+            }
           }
+        </script>
+        <!-- Data Table -->
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+        <script>
+          $(document).ready(function () {
+            $("#device-table").DataTable({
+              lengthMenu: [5, 15, 25, 50], // Các tùy chọn giới hạn số lượng mục trên bảng
+              language: {
+                lengthMenu: "Hiển thị _MENU_ thiết bị",
+                info: "Hiển thị từ _START_ đến _END_ của _TOTAL_ thiết bị",
+                infoEmpty: "Hiển thị từ 0 đến 0 của 0 thiết bị",
+                infoFiltered: "(lọc từ _MAX_ thiết bị)",
+                search: "Tìm kiếm:",
+                paginate: {
+                  first: "Đầu",
+                  last: "Cuối",
+                  next: "Tiếp",
+                  previous: "Trước",
+                },
+                zeroRecords: "Không tìm thấy thiết bị",
+                emptyTable: "Không có dữ liệu trong bảng",
+                loadingRecords: "Đang tải...",
+                processing: "Đang xử lý...",
+                aria: {
+                  sortAscending: ": Sắp xếp tăng dần",
+                  sortDescending: ": Sắp xếp giảm dần",
+                },
+              },
+              columnDefs: [
+                { orderable: false, targets: 6 }, // Không cho phép sắp xếp cột thao tác
+              ],
+              order: [[0, "asc"]], // Sắp xếp cột đầu tiên theo thứ tự tăng dần
+              //"dom": '<"top"l>rt<"bottom"ip><"clear">' // Định dạng các thành phần của bảng
+            });
+          });
+        </script>
+        <!-- Menu Toggle Script -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+        <script>
+          // Hide submenus
+          $("#body-row .collapse").collapse("hide");
 
           // Collapse/Expand icon
-          $("#collapse-icon").toggleClass(
-            "fa-angle-double-left fa-angle-double-right"
-          );
-        }
-      </script>
+          $("#collapse-icon").addClass("fa-angle-double-left");
+
+          // Collapse click
+          $("[data-toggle=sidebar-colapse]").click(function () {
+            SidebarCollapse();
+          });
+
+          function SidebarCollapse() {
+            $(".menu-collapsed").toggleClass("d-none");
+            $(".sidebar-submenu").toggleClass("d-none");
+            $(".submenu-icon").toggleClass("d-none");
+            $("#sidebar-container").toggleClass(
+              "sidebar-expanded sidebar-collapsed"
+            );
+
+            // Treating d-flex/d-none on separators with title
+            var SeparatorTitle = $(".sidebar-separator-title");
+            if (SeparatorTitle.hasClass("d-flex")) {
+              SeparatorTitle.removeClass("d-flex");
+            } else {
+              SeparatorTitle.addClass("d-flex");
+            }
+            // Collapse/Expand icon
+            $("#collapse-icon").toggleClass(
+              "fa-angle-double-left fa-angle-double-right"
+            );
+          }
+        </script>
+      </div>
     </div>
   </body>
 </html>
