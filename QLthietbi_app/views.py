@@ -8,7 +8,7 @@ from .models import Phong, ThietBi, LoaiThietBi
 from .forms import *
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from datetime import datetime
 import csv
@@ -101,13 +101,14 @@ def perform_logout(requet):
 #     listThietBi = ThietBi.objects.all()
 #     return render(request,"quanly.html",{'listThietBi': listThietBi})
 
-class ThietBi_view(View):
+class ThietBi_view(ListView, FormView):
     def get(self, request):
+        form = ThemThietBiForm()
         listThietBi = ThietBi.objects.all()
-        thietbi_count = listThietBi.count()
+        # thietbi_count = listThietBi.count()
         myFilter = ThietBiFilter(request.GET, queryset=listThietBi)
         listThietBi = myFilter.qs
-        return render(request,"quanly.html",{'listThietBi': listThietBi, 'myFilter': myFilter})
+        return render(request,"quanly.html",{'listThietBi': listThietBi, 'myFilter': myFilter, 'form': form})
     
     def post(self, request):
         if request.method == "POST":
@@ -116,7 +117,7 @@ class ThietBi_view(View):
                 thietbi = ThietBi.objects.get(pk=id)
                 thietbi.delete()
         return redirect('QLthietbi_app:render_trangchinh')
-
+    
 def render_themthietbi(request):
     form = ThemThietBiForm()
     if request.method == "POST":
@@ -124,7 +125,7 @@ def render_themthietbi(request):
         if form.is_valid():
             form.save()
             return redirect('QLthietbi_app:render_trangchinh')
-    return render(request,"themtb.html", {'form': form}) 
+    return render(request,"quanly.html", {'form': form}) 
 
 def render_capnhap(request, pk):
     thietbi = get_object_or_404(ThietBi, pk=pk)

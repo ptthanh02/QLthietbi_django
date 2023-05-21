@@ -1,4 +1,4 @@
-{% load static %}
+{% load static %} {%load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -228,14 +228,24 @@
       </div>
       <!-- sidebar-container END -->
       <!-- MAIN -->
+      {% include "them_modal.html" %}
       <div class="col py-2">
         <div class="row element-button">
           <div class="col-sm px-3 py-1 pr-1">
-            <a
+            {% comment %} <a
               class="btn btn-dark"
               href="{% url 'QLthietbi_app:render_themthietbi' %}"
               ><i class="fa fa-plus" aria-hidden="true"> Thêm mới</i></a
+            > {% endcomment %}
+            <button
+              type="button"
+              name="delete"
+              class="btn btn-dark"
+              data-toggle="modal"
+              data-target="#thietbiModal"
             >
+              <i class="fa fa-plus" aria-hidden="true"> Thêm mới</i>
+            </button>
             <button
               type="button"
               name="delete"
@@ -258,6 +268,7 @@
                 Tạo file.csv</i
               ></a
             >
+            
             <div class="row px-1 py-3">
               <div class="table-responsive">
                 <table
@@ -273,7 +284,7 @@
                       data-device-url="{% url 'QLthietbi_app:ajax_load_phong' %}"
                     >
                       {% csrf_token %} {% for field in myFilter.form %}
-                      <a>&nbsp{{ field.label_tag }}</a>&nbsp{{ field }}&nbsp 
+                      <a>&nbsp{{ field.label_tag }}</a>&nbsp{{ field }}&nbsp
                       {%endfor %}
                       <button type="submit" class="btn btn-dark">
                         <i class="fa fa-filter" aria-hidden="true"> Lọc</i>
@@ -404,32 +415,63 @@
           <!-- Main Col END -->
         </div>
         <!-- body-row END -->
-        <!-- Data Table -->
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script>
-          $("#id_tang").change(function () {
+          $("#thietbifilter #id_tang").change(function () {
             var url = $("#thietbifilter").attr("data-device-url");
             var tangId = $(this).val();
-
+            if (tangId == "") {
+              $("#thietbifilter #id_phong").html(
+                "<option value=''>---------</option>"
+              );
+              return;
+            }
             $.ajax({
               url: url,
               data: {
                 tang_id: tangId,
               },
               success: function (data) {
-                $("#id_phong").html(data);
+                $("#thietbifilter #id_phong").html(data);
               },
             });
           });
+
+          $("#thietbiform #id_tang").change(function () {
+            var url = $("#thietbiform").attr("data-device-url");
+            var tangId = $(this).val();
+            if (tangId == "") {
+              $("#thietbifilter #id_phong").html(
+                "<option value=''>---------</option>"
+              );
+              return;
+            }
+            $.ajax({
+              url: url,
+              data: {
+                tang_id: tangId,
+              },
+              success: function (data) {
+                $("#thietbiform #id_phong").html(data);
+              },
+            });
+          });
+
+          $.when(
+            $("#thietbifilter #id_tang").trigger("change"),
+            $("#thietbiform #id_tang").trigger("change")
+          ).done(function (filter_data, them_data) {
+            console.log(filter_data);
+            console.log(them_data);
+          });
         </script>
         <script>
+          $("#myModal").on("shown.bs.modal", function () {});
           $(function () {
             $('[data-toggle="tooltip"]').tooltip();
           });
         </script>
-        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+
         <script>
           function deleteSelectedItems() {
             if (confirm("Bạn có chắc chắn muốn xóa?")) {
@@ -462,6 +504,9 @@
             }
           }
         </script>
+        <!-- Data Table -->
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
         <script>
           $(document).ready(function () {
             $("#device-table").DataTable({

@@ -3,6 +3,7 @@ import django_filters
 from .models import *
 
 class ThietBiFilter(django_filters.FilterSet):
+    phong = django_filters.ModelChoiceFilter(queryset=Phong.objects.none())
     class Meta:
         model = ThietBi
         fields = ('loai_thiet_bi','tinh_trang', 'tang', 'phong')
@@ -12,3 +13,4 @@ class ThietBiFilter(django_filters.FilterSet):
             'tang': django_filters.widgets.LinkWidget(attrs={'class': 'form-control'}),
             'phong': django_filters.widgets.LinkWidget(attrs={'class': 'form-control'}),
         }
+    

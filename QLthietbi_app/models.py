@@ -37,7 +37,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     ]
     gioi_tinh = models.CharField(max_length=6, choices=GENDER_CHOICES, default='Chưa đặt giới tính', blank=True, null=True, verbose_name='Giới tính')
     
-    USER_ROLES = [    ('quanly', 'Quản Lý'),    ('nhanvien', 'Nhân Viên'),    ('kythuatvien', 'Kỹ Thuật Viên'),]
+    USER_ROLES = [('quanly', 'Quản Lý'),('kythuatvien', 'Kỹ Thuật Viên'),]
     chuc_vu = models.CharField(choices=USER_ROLES, max_length=20, default='Chưa đặt chức vụ',verbose_name='Chức vụ')
 
     email = models.EmailField(verbose_name='Địa chỉ email', unique=True)
@@ -74,8 +74,6 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created:
         if instance.role == 'quanly':
             QuanLy.objects.create(user=instance)
-        elif instance.role == 'nhanvien':
-            NhanVien.objects.create(user=instance)
         elif instance.role == 'kythuatvien':
             KyThuatVien.objects.create(user=instance)
 
@@ -89,18 +87,6 @@ class QuanLy(BaseUserProfile):
             else:
                 self.id_nguoidung = 'QL0001'
         super(QuanLy, self).save(*args, **kwargs)  
-    
-class NhanVien(BaseUserProfile):
-
-    def save(self, *args, **kwargs):
-
-        if not self.id_nguoidung:
-            self.id_nguoidung = NhanVien.objects.aggregate(Max('id_nguoidung'))['id_nguoidung__max']
-            if self.id_nguoidung:
-                self.id_nguoidung = 'NV' + str(int(self.id_nguoidung[2:]) + 1).zfill(4)
-            else:
-                self.id_nguoidung = 'NV0001'
-        super(NhanVien, self).save(*args, **kwargs)  
         
 class KyThuatVien(BaseUserProfile):
     def save(self, *args, **kwargs):
@@ -146,11 +132,11 @@ class LoaiThietBi(models.Model):
     
 class ThietBi(models.Model):
     id_thiet_bi = models.CharField(max_length=10, primary_key=True, blank=False, null=False, unique=True, editable=False)
-    ten_thiet_bi = models.CharField(max_length=30, verbose_name='Tên thiết bị')
+    ten_thiet_bi = models.CharField(max_length=30, verbose_name='Tên thiết bị', blank=False, null=True)
     loai_thiet_bi = models.ForeignKey(LoaiThietBi, on_delete=models.SET_NULL, null=True, verbose_name='Loại thiết bị')
-    phong = models.ForeignKey(Phong, on_delete=models.SET_NULL, null=True,blank= True, verbose_name='Phòng')
-    tang = models.ForeignKey(Tang, on_delete=models.SET_NULL, null=True,blank= True, verbose_name='Tầng')
-    hinh_anh = models.ImageField(upload_to='images/', blank=True, null=True, verbose_name='Hình ảnh')
+    phong = models.ForeignKey(Phong, on_delete=models.SET_NULL, null=True,blank=False, verbose_name='Phòng')
+    tang = models.ForeignKey(Tang, on_delete=models.SET_NULL, null=True,blank=False, verbose_name='Tầng')
+    hinh_anh = models.ImageField(upload_to='images/', blank=False, null=True, verbose_name='Hình ảnh')
     ngay_mua = models.DateField(verbose_name='Ngày mua')
     gia_mua = models.IntegerField(verbose_name='Giá mua')
     tinh_trang_choices = [
@@ -158,7 +144,7 @@ class ThietBi(models.Model):
         ('dangbaotri', 'Đang bảo trì'),
         ('bihong', 'Bị hỏng'),
     ]
-    tinh_trang = models.CharField(max_length=10, choices=tinh_trang_choices, default='hoatdong', verbose_name='Tình trạng')
+    tinh_trang = models.CharField(max_length=10, choices=tinh_trang_choices, default='hoatdong', verbose_name='Tình trạng', blank=False, null=True)
     ngay_bao_tri = models.DateField(verbose_name='Ngày bảo trì',blank=True, null=True)
     mo_ta = models.TextField(verbose_name='Mô tả', blank=True, null=True)
     class Meta:
