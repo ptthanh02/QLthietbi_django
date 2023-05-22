@@ -147,6 +147,7 @@ class ThietBi(models.Model):
     tinh_trang = models.CharField(max_length=10, choices=tinh_trang_choices, default='hoatdong', verbose_name='Tình trạng', blank=False, null=True)
     ngay_bao_tri = models.DateField(verbose_name='Ngày bảo trì',blank=True, null=True)
     mo_ta = models.TextField(verbose_name='Mô tả', blank=True, null=True)
+    don_vi_cung_cap = models.CharField(max_length=30, verbose_name='Đơn vị cung cấp', blank=True, null=True)
     class Meta:
         verbose_name_plural = 'Thiết bị'
     

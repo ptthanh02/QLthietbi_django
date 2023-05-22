@@ -1,4 +1,4 @@
-{% load static %}
+{% load static %} {%load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -60,9 +60,10 @@
           >
         </li>
         <li class="breadcrumb-item active" aria-current="page">
-          Chi tiết thiết bị
+          Thông tin thiết bị
         </li>
       </ol>
+      <!-- Site map -->
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item dropdown">
@@ -221,102 +222,143 @@
       </div>
       <!-- sidebar-container END -->
       <!-- MAIN -->
-      <div class="col">
-        <h1>Thiết bị {{thietbi.id_thiet_bi}}</h1>
-        <hr />
-        <a
-          href="{% url 'QLthietbi_app:render_trangchinh' %}"
-          class="btn btn-dark"
-          >Quay lại</a
-        >
-        <br /><br />
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">
-                    Thông tin thiết bị {{thietbi.id_thiet_bi}}
-                  </h5>
-                  <hr />
-                  <p class="card-text">
-                    Tên thiết bị: {{thietbi.ten_thiet_bi}}
-                  </p>
-                  <p class="card-img-fluid">
-                    Hình ảnh:
+      <div class="col py-2">
+        <div class="row element-button">
+          <div class="col-sm px-3 py-1 pr-1">
+            <a
+              href="{% url 'QLthietbi_app:render_trangchinh' %}"
+              class="btn btn-dark"
+              ><i class="fa fa-angle-double-left" aria-hidden="true"></i> Trở
+              lại</a
+            >
+          </div>
+        </div>
+        <div class="col-12 p-md-2">
+          <div class="card">
+            <div class="card-content">
+              <div class="card-body">
+                <h5 class="card-title bg-dark text-white text-center">
+                  <br /><i
+                    class="fa fa-info-circle fa-lg"
+                    aria-hidden="true"
+                  ></i
+                  >&nbsp Thông tin chi tiết thiết bị {{ pk }}<br /><br />
+                </h5>
+                {% comment %}
+                <p class="card-text">Thông tin chi tiết thiết bị</p>
+                {% endcomment %}
+                <div class="form-row">
+                  <div class="form-group col-md-3 mb-0">
+                    <li style="font-size: 20px">
+                      <strong>Tên thiết bị:</strong> &nbsp{{ thietbi.ten_thiet_bi }}
+                    </li>
+                    <li style="font-size: 20px">
+                      <strong>Trạng thái:</strong> &nbsp {% if thietbi.tinh_trang == "hoatdong"%}
+                      <span class="badge badge-success"
+                        ><i class="fa fa-signal" aria-hidden="true"></i> Hoạt
+                        động</span
+                      >
+                      {% elif thietbi.tinh_trang == "dangbaotri" %}
+                      <span class="badge badge-warning"
+                        ><i
+                          class="fa fa-cog fa-spin fa-fw"
+                          aria-hidden="true"
+                        ></i>
+                        Bảo trì</span
+                      >
+                      {% else %}
+                      <span class="badge badge-danger"
+                        ><i
+                          class="fa fa-spinner fa-pulse fa-fw"
+                          aria-hidden="true"
+                        ></i>
+                        Hỏng</span
+                      >
+                      {% endif %}
+                    </li>
+                    <li style="font-size: 20px"><strong>Hình ảnh:</strong></li>
+                  </div>
+                  <div class="form-group col-md-3 mb-0">
+                    <li style="font-size: 20px">
+                      <strong>Lần cuối bảo trì:</strong> &nbsp{{ ngay_bao_tri_str }}
+                    </li>
+                    <li style="font-size: 20px">
+                      <strong>Vị trí:</strong>&nbsp Tầng {{ thietbi.tang }},&nbsp Phòng {{thietbi.phong }}
+                    </li>
+                  </div>
+                  <div class="form-group col-md-3 mb-0">
+                    <li style="font-size: 20px">
+                      <strong>Giá mua:</strong> &nbsp{{ gia_mua_str }} VNĐ
+                    </li>
+                    <li style="font-size: 20px">
+                      <strong>Ngày mua:</strong> &nbsp{{ ngay_mua_str }}
+                    </li>
+                  </div>
+                  <div class="form-group col-md-3 mb-0">
+                    <li style="font-size: 20px">
+                      <strong>Loại:</strong> &nbsp{{ thietbi.loai_thiet_bi }}
+                    </li>
+                    <li style="font-size: 20px">
+                      <strong>Đơn vị cung cấp:</strong> &nbsp{{ thietbi.don_vi_cung_cap }}
+                    </li>
+                  </div>
+                </div>
+                <br />
+                <div class="form-row">
+                  <div class="form-group col-md-6 mb-0">
                     <img
                       src="{{thietbi.hinh_anh.url}}"
                       alt="Hình ảnh thiết bị"
-                      width="200"
-                      height="200"
+                      width="600"
+                      height="600"
                     />
-                  </p>
-                  <p class="card-text">
-                    Loại thiết bị: {{thietbi.loai_thiet_bi}}
-                  </p>
-                  <p class="card-text">Tình trạng: {{thietbi.tinh_trang}}</p>
-                  <p class="card-text">Mô tả: {{thietbi.mo_ta}}</p>
-                  <p class="card-text">Ngày mua: {{thietbi.ngay_mua}}</p>
-                  <p class="card-text">Giá tiền: {{thietbi.gia_mua}}</p>
-                  <p class="card-text">
-                    Ngày bảo trì gần nhất: {{thietbi.ngay_bao_tri}}
-                  </p>
-                  <p class="card-text">Phòng: {{thietbi.phong}}</p>
-                  <p class="card-text">Tầng: {{thietbi.tang}}</p>
+                  </div>
+                  <div class="form-group col-md-6 mb-0 mt-5">
+                    <li style="font-size: 20px">
+                      <strong>Mô tả:</strong> &nbsp{{ thietbi.mo_ta }}
+                    </li>
+                  </div>
                 </div>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+                <script>
+                  // Hide submenus
+                  $("#body-row .collapse").collapse("hide");
+
+                  // Collapse/Expand icon
+                  $("#collapse-icon").addClass("fa-angle-double-left");
+
+                  // Collapse click
+                  $("[data-toggle=sidebar-colapse]").click(function () {
+                    SidebarCollapse();
+                  });
+
+                  function SidebarCollapse() {
+                    $(".menu-collapsed").toggleClass("d-none");
+                    $(".sidebar-submenu").toggleClass("d-none");
+                    $(".submenu-icon").toggleClass("d-none");
+                    $("#sidebar-container").toggleClass(
+                      "sidebar-expanded sidebar-collapsed"
+                    );
+
+                    // Treating d-flex/d-none on separators with title
+                    var SeparatorTitle = $(".sidebar-separator-title");
+                    if (SeparatorTitle.hasClass("d-flex")) {
+                      SeparatorTitle.removeClass("d-flex");
+                    } else {
+                      SeparatorTitle.addClass("d-flex");
+                    }
+
+                    // Collapse/Expand icon
+                    $("#collapse-icon").toggleClass(
+                      "fa-angle-double-left fa-angle-double-right"
+                    );
+                  }
+                </script>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- body-row END -->
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
-      <script>
-        $(document).ready(function () {
-          $("#device-table").DataTable();
-        });
-
-        $(document).ready(function () {
-          $("#device-table").DataTable({
-            ordering: true, // false to disable sorting (or any other option)
-          });
-          $(".dataTables_length").addClass("bs-select");
-        });
-      </script>
-      <script>
-        // Hide submenus
-        $("#body-row .collapse").collapse("hide");
-
-        // Collapse/Expand icon
-        $("#collapse-icon").addClass("fa-angle-double-left");
-
-        // Collapse click
-        $("[data-toggle=sidebar-colapse]").click(function () {
-          SidebarCollapse();
-        });
-
-        function SidebarCollapse() {
-          $(".menu-collapsed").toggleClass("d-none");
-          $(".sidebar-submenu").toggleClass("d-none");
-          $(".submenu-icon").toggleClass("d-none");
-          $("#sidebar-container").toggleClass(
-            "sidebar-expanded sidebar-collapsed"
-          );
-
-          // Treating d-flex/d-none on separators with title
-          var SeparatorTitle = $(".sidebar-separator-title");
-          if (SeparatorTitle.hasClass("d-flex")) {
-            SeparatorTitle.removeClass("d-flex");
-          } else {
-            SeparatorTitle.addClass("d-flex");
-          }
-
-          // Collapse/Expand icon
-          $("#collapse-icon").toggleClass(
-            "fa-angle-double-left fa-angle-double-right"
-          );
-        }
-      </script>
     </div>
   </body>
 </html>

@@ -245,7 +245,7 @@
               data-toggle="modal"
               data-target="#thietbiModal"
             >
-              <i class="fa fa-plus" aria-hidden="true"> Thêm mới</i>
+              <i class="fa fa-plus" aria-hidden="true"> Thêm thiết bị</i>
             </button>
             <button
               type="button"
@@ -357,14 +357,20 @@
                       {% elif ThietBi.tinh_trang == "dangbaotri" %}
                       <td>
                         <span class="badge badge-warning"
-                          ><i class="fa fa-cog" aria-hidden="true"></i> Bảo
-                          trì</span
+                          ><i
+                            class="fa fa-cog fa-spin fa-fw"
+                            aria-hidden="true"
+                          ></i>
+                          Bảo trì</span
                         >
                       </td>
                       {% else %}
                       <td>
                         <span class="badge badge-danger"
-                          ><i class="fa fa-spinner" aria-hidden="true"></i>
+                          ><i
+                            class="fa fa-spinner fa-pulse fa-fw"
+                            aria-hidden="true"
+                          ></i>
                           Hỏng</span
                         >
                       </td>
@@ -445,7 +451,7 @@
                 "<option value=''>---------</option>"
               );
               return;
-            }
+            } 
             $.ajax({
               url: url,
               data: {

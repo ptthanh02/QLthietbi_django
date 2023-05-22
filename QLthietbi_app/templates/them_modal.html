@@ -24,7 +24,12 @@
       <div class="modal-body">
         {% if form.errors %}
         <div class="alert alert-danger" role="alert">
-          <strong>{{ form.errors }}</strong>
+          <strong>Oops!</strong> Có lỗi xảy ra, vui lòng thử lại.
+          <ul>
+            {% for field in form %} {% for error in field.errors %}
+            <li><strong>{{ field.label }}</strong> {{ error }}</li>
+            {% endfor %} {% endfor %}
+          </ul>
         </div>
         {% endif %}
         <a>
@@ -64,10 +69,13 @@
               {{ form.phong|as_crispy_field }}
             </div>
             <div class="form-row">
-              <div class="form-group col-md-5 mb-0">
+              <div class="form-group col-md-4 mb-0">
+                {{ form.don_vi_cung_cap|as_crispy_field }}
+              </div>
+              <div class="form-group col-md-4 mb-0">
                 {{ form.gia_mua|as_crispy_field }}
               </div>
-              <div class="form-group col-md-5 mb-0">
+              <div class="form-group col-md-4 mb-0">
                 {{ form.ngay_mua|as_crispy_field }}
               </div>
             </div>

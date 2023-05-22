@@ -49,8 +49,8 @@ class LoaiThietBiAdmin(admin.ModelAdmin):
     list_per_page = 10
 
 class ThietBiAdmin(admin.ModelAdmin):
-    list_display = ['id_thiet_bi', 'ten_thiet_bi','hinh_anh', 'loai_thiet_bi', 'phong', 'ngay_mua', 'gia_mua', 'tinh_trang', 'ngay_bao_tri', 'mo_ta']
-    list_filter = ('loai_thiet_bi', 'tinh_trang', 'ngay_bao_tri')
+    list_display = ['id_thiet_bi', 'ten_thiet_bi','hinh_anh', 'loai_thiet_bi', 'phong', 'ngay_mua', 'gia_mua', 'tinh_trang', 'ngay_bao_tri', 'don_vi_cung_cap', 'mo_ta']
+    list_filter = ('loai_thiet_bi', 'tinh_trang', 'tang', 'phong')
     search_fields = ('ten_thiet_bi', 'loai_thiet_bi', 'tinh_trang')
     ordering = ('id_thiet_bi',)
     list_per_page = 10

@@ -120,13 +120,19 @@ class ThietBi_view(ListView, FormView):
         return redirect(self.success_url)
     
 def render_themthietbi(request):
+    form_error = False
+    listThietBi = ThietBi.objects.all()
+    myFilter = ThietBiFilter(request.GET, queryset=listThietBi)
+    listThietBi = myFilter.qs
     form = ThemThietBiForm()
     if request.method == "POST":
         form = ThemThietBiForm(request.POST,request.FILES)
         if form.is_valid():
             form.save()
             return redirect('QLthietbi_app:render_trangchinh')
-    return render(request,"quanly.html", {'form': form}) 
+        else:
+            form_error = True
+    return render(request,"themtb.html", {'form': form, 'form_error': form_error, 'listThietBi': listThietBi, 'myFilter': myFilter})
 
 def render_capnhap(request, pk):
     thietbi = get_object_or_404(ThietBi, pk=pk)
@@ -159,8 +165,12 @@ def load_phong(request):
     return render(request, 'phong_dropdown_list_options.html', {'listPhong': listPhong})
 
 def render_chitietthietbi(request, id_thiet_bi):
+    pk = id_thiet_bi
     thietbi = ThietBi.objects.get(id_thiet_bi=id_thiet_bi)
-    return render(request,"chitiettb.html", {'thietbi': thietbi})
+    gia_mua_str = "{:,.0f}".format(thietbi.gia_mua)
+    ngay_mua_str = thietbi.ngay_mua.strftime('%d/%m/%Y') if thietbi.ngay_mua else 'Không có dữ liệu'
+    ngay_bao_tri_str = thietbi.ngay_bao_tri.strftime('%d/%m/%Y') if thietbi.ngay_bao_tri else 'Chưa bảo trì'
+    return render(request,"chitiettb.html", {'thietbi': thietbi, 'pk': pk, 'gia_mua_str': gia_mua_str, 'ngay_mua_str': ngay_mua_str,'ngay_bao_tri_str': ngay_bao_tri_str})
     
 def render_xoathietbi(request, id_thiet_bi):
     thietbi = ThietBi.objects.get(id_thiet_bi=id_thiet_bi)
