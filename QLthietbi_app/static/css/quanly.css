@@ -144,7 +144,7 @@ table-responsive.dataTable thead .sorting_desc_disabled:before {
 }
 
 .dataTables_wrapper table.dataTable td,
-.dataTables_wrapper table.dataTable th {
+.dataTables_wrapper table.dataTable th{
   text-align: center;
   font-family: "Source Code Pro", monospace;
   vertical-align: middle;
@@ -179,6 +179,15 @@ caption {
   color: #343a40;
 }
 /* -------------------------------DataTable End-------------------------------------------- */
+
+.xac-nhan-xoa1-modal {
+  z-index: 9999;
+}
+
+.xac-nhan-xoa1-modal .modal-dialog {
+  text-align: left; 
+  font-family: "arial";
+}
 
 .btn-dark {
   margin: 2px;

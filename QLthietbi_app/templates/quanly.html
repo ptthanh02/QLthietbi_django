@@ -228,7 +228,12 @@
       </div>
       <!-- sidebar-container END -->
       <!-- MAIN -->
-      {% include "them_modal.html" %}
+      {% include "them_modal.html" %} 
+      <!-- Modal -->
+      {% include "chuachontb_modal.html" %} 
+      <!-- Modal -->
+      {%include "xacnhanxoa_nhieu_modal.html" %} 
+      <!-- Modal -->
       <div class="col py-2">
         <div class="row element-button">
           <div class="col-sm px-3 py-1 pr-1">
@@ -285,7 +290,7 @@
                       data-device-url="{% url 'QLthietbi_app:ajax_load_phong' %}"
                     >
                       {% csrf_token %} {% for field in myFilter.form %}
-                      <a>&nbsp{{ field.label_tag }}</a>&nbsp{{ field }}&nbsp
+                      <a>{{ field.label_tag }}</a>&nbsp{{ field }}&nbsp
                       {%endfor %}
                       <button type="submit" class="btn btn-dark">
                         <i class="fa fa-filter" aria-hidden="true"> Lọc</i>
@@ -300,6 +305,16 @@
                   </caption>
                   <thead class="thead-dark">
                     <tr id="chk-th">
+                      <th>
+                        &nbsp
+                        <input
+                          class="form-check-input checkbox-large"
+                          type="checkbox"
+                          name="select_all"
+                          id="select-all"
+                        />
+                        Chọn
+                      </th>
                       <th>Mã thiết bị</th>
                       <th>Tên thiết bị</th>
                       <th>Hình ảnh</th>
@@ -313,13 +328,17 @@
                   <tbody>
                     {% csrf_token %} {% for ThietBi in listThietBi %}
                     <tr>
-                      <td>
+                      <td class="text-center">
+                        &nbsp
+                        &nbsp
                         <input
                           class="form-check-input checkbox-large"
                           type="checkbox"
                           name="instance"
                           value="{{ThietBi.id_thiet_bi}}"
                         />
+                      </td>
+                      <td>
                         <a
                           href="{% url 'QLthietbi_app:render_chitietthietbi' ThietBi.id_thiet_bi %}"
                           class="a-td"
@@ -379,7 +398,7 @@
                         <a
                           href="{% url 'QLthietbi_app:render_chitietthietbi' ThietBi.id_thiet_bi %}"
                           class="btn btn-outline-dark"
-                          data-toggle="tooltip"
+                          data-tooltip="tooltip"
                           data-placement="top"
                           title="Thông tin thiết bị"
                           ><i class="fa fa-info-circle" aria-hidden="true"></i
@@ -387,7 +406,7 @@
                         <a
                           href="{% url 'QLthietbi_app:render_chinhsuathietbi' ThietBi.id_thiet_bi %}"
                           class="btn btn-outline-dark"
-                          data-toggle="tooltip"
+                          data-tooltip="tooltip"
                           data-placement="top"
                           title="Chỉnh sửa thiết bị"
                           ><i
@@ -395,18 +414,21 @@
                             aria-hidden="true"
                           ></i
                         ></a>
+                        {% include "xacnhanxoa1_modal.html" %}
                         <a
-                          href="{% url 'QLthietbi_app:render_xoathietbi' ThietBi.id_thiet_bi %}"
+                          {% comment %} href="{% url 'QLthietbi_app:render_xoathietbi' ThietBi.id_thiet_bi %}" {% endcomment %}
                           class="btn btn-outline-dark"
-                          data-toggle="tooltip"
                           data-placement="top"
                           title="Xóa thiết bị"
+                          data-target="#confirmDelete1Modal-{{ ThietBi.id_thiet_bi }}"
+                          data-toggle="modal"
+                          data-tooltip="tooltip"
+                          id="delete-item"
                           ><i class="fa fa-trash-o" aria-hidden="true"></i
                         ></a>
                         <a
-                          href="#"
                           class="btn btn-outline-dark"
-                          data-toggle="tooltip"
+                          data-tooltip="tooltip"
                           data-placement="top"
                           title="Tạo báo cáo thiết bị"
                           ><i class="fa fa-wpforms" aria-hidden="true"></i
@@ -451,7 +473,7 @@
                 "<option value=''>---------</option>"
               );
               return;
-            } 
+            }
             $.ajax({
               url: url,
               data: {
@@ -493,40 +515,54 @@
         </script>
         <script>
           $(function () {
-            $('[data-toggle="tooltip"]').tooltip();
+            $('[data-tooltip="tooltip"]').tooltip();
           });
         </script>
         <script>
           function deleteSelectedItems() {
-            if (confirm("Bạn có chắc chắn muốn xóa?")) {
-              var selectedItems = [];
-              var csrf = $("input[name=csrfmiddlewaretoken]").val();
-              $("input:checkbox[name=instance]:checked").each(function () {
-                selectedItems.push($(this).val());
-              });
-              if (selectedItems.length == 0) {
-                alert("Bạn chưa chọn thiết bị nào!");
-                return;
-              } else {
-                console.log(selectedItems);
-                $.ajax({
-                  url: ".",
-                  type: "POST",
-                  data: {
-                    selectedItems,
-                    csrfmiddlewaretoken: "{{ csrf_token }}",
-                  },
-                  success: function (data) {
-                    if (data["status"] == "success") {
-                      location.reload();
-                    } else {
-                      location.reload();
-                    }
-                  },
-                });
-              }
+            var selectedItems = [];
+            var csrf = $("input[name=csrfmiddlewaretoken]").val();
+            $("input:checkbox[name=instance]:checked").each(function () {
+              selectedItems.push($(this).val());
+            });
+            if (selectedItems.length == 0) {
+              $("#notseletedmodal").modal("show");
+              return;
+            } else {
+              $("#confirmDeleteModal").modal("show");
             }
+
+            // Xử lý sự kiện xác nhận xóa
+            $("#confirmDeleteBtn").click(function () {
+              $.ajax({
+                url: ".",
+                type: "POST",
+                data: {
+                  selectedItems,
+                  csrfmiddlewaretoken: csrf,
+                },
+                success: function (data) {
+                  if (data["status"] == "success") {
+                    location.reload();
+                  } else {
+                    location.reload();
+                  }
+                },
+              });
+            });
           }
+        </script>
+        <script>
+          $(document).ready(function () {
+            // Xử lý sự kiện khi checkbox "select_all" được thay đổi
+            $("#select-all").change(function () {
+              // Lấy trạng thái của checkbox "select_all"
+              var isChecked = $(this).prop("checked");
+        
+              // Đặt trạng thái của tất cả các checkbox khác theo checkbox "select_all"
+              $("input[name='instance']").prop("checked", isChecked);
+            });
+          });
         </script>
         <!-- Data Table -->
         <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
@@ -557,9 +593,10 @@
                 },
               },
               columnDefs: [
-                { orderable: false, targets: 6 }, // Không cho phép sắp xếp cột thao tác
+                { orderable: false, targets: 6 },
+                { orderable: false, targets: 0 } // Không cho phép sắp xếp cột thao tác
               ],
-              order: [[0, "asc"]], // Sắp xếp cột đầu tiên theo thứ tự tăng dần
+              order: [[1, "asc"]], // Sắp xếp cột đầu tiên theo thứ tự tăng dần
               //"dom": '<"top"l>rt<"bottom"ip><"clear">' // Định dạng các thành phần của bảng
             });
           });
