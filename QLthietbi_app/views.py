@@ -170,7 +170,14 @@ def render_chitietthietbi(request, id_thiet_bi):
     gia_mua_str = "{:,.0f}".format(thietbi.gia_mua)
     ngay_mua_str = thietbi.ngay_mua.strftime('%d/%m/%Y') if thietbi.ngay_mua else 'Không có dữ liệu'
     ngay_bao_tri_str = thietbi.ngay_bao_tri.strftime('%d/%m/%Y') if thietbi.ngay_bao_tri else 'Chưa bảo trì'
-    return render(request,"chitiettb.html", {'thietbi': thietbi, 'pk': pk, 'gia_mua_str': gia_mua_str, 'ngay_mua_str': ngay_mua_str,'ngay_bao_tri_str': ngay_bao_tri_str})
+    form = ThemThietBiForm(instance=thietbi)
+    if request.method == "POST":
+        form = ThemThietBiForm(request.POST,request.FILES,instance=thietbi)
+        if form.is_valid():
+            form.save()
+            form = ThemThietBiForm()
+            return render(request,"chitiettb.html", {'thietbi': thietbi, 'pk': pk, 'gia_mua_str': gia_mua_str, 'ngay_mua_str': ngay_mua_str,'ngay_bao_tri_str': ngay_bao_tri_str, 'form': form})
+    return render(request,"chitiettb.html", {'thietbi': thietbi, 'pk': pk, 'gia_mua_str': gia_mua_str, 'ngay_mua_str': ngay_mua_str,'ngay_bao_tri_str': ngay_bao_tri_str, 'form': form})
     
 def render_xoathietbi(request, id_thiet_bi):
     thietbi = ThietBi.objects.get(id_thiet_bi=id_thiet_bi)
@@ -185,4 +192,10 @@ def render_xoanhieutthietbi(request):
             thietbi = ThietBi.objects.get(id_thiet_bi=id)
             thietbi.delete()
     return redirect('QLthietbi_app:render_trangchinh')
+
+def render_vitri_thietbi(request):
+    listPhong = Phong.objects.all()
+    listTang = Tang.objects.all()
+    listLoaiThietBi = LoaiThietBi.objects.all()
+    return render(request, 'vitri_thietbi.html', {'listPhong': listPhong, 'listTang': listTang, 'listLoaiThietBi': listLoaiThietBi})
 

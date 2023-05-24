@@ -1,0 +1,223 @@
+{% extends 'header.html' %}
+<!-- Format keep -->
+{% block content %}
+<div class="col-3 p-md-4">
+  <div class="row element-button">
+    <div class="px-3 py-1 pr-1">
+      <button
+        type="button"
+        class="btn btn-dark"
+        data-toggle="modal"
+        data-target="#thietbiModal"
+      >
+        <i class="fa fa-plus" aria-hidden="true"> Phòng</i>
+      </button>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table
+      id="phong-table"
+      class="table table-sm table-striped bg-light table-condensed table-bordered"
+    >
+      <thead class="thead-dark">
+        <th>ID</th>
+        <th>Tên phòng</th>
+        <th>Tầng của phòng</th>
+        <th>Thao tác</th>
+      </thead>
+      <tbody>
+        <tr>
+          {% csrf_token %} {% for Phong in listPhong %}
+          <td class="text-center">{{ Phong.id }}</td>
+          <td class="text-center">Phòng {{ Phong.ten_phong }}</td>
+          <td class="text-center">{{ Phong.tang }}</td>
+          <td class="text-center">
+            <a
+              class="btn btn-outline-dark"
+              data-placement="top"
+              title="Xóa thiết bị"
+              data-target="#confirmDelete1Modal-{{ ThietBi.id_thiet_bi }}"
+              data-toggle="modal"
+              data-tooltip="tooltip"
+              id="delete-item"
+              ><i class="fa fa-trash-o" aria-hidden="true"></i
+            ></a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="col-3 p-md-4">
+  <div class="row element-button">
+    <div class="px-3 py-1 pr-1">
+      <button
+        type="button"
+        class="btn btn-dark"
+        data-toggle="modal"
+        data-target="#thietbiModal"
+      >
+        <i class="fa fa-plus" aria-hidden="true"> Tầng</i>
+      </button>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table
+      id="tang-table"
+      class="table table-sm table-striped bg-light table-condensed table-bordered"
+    >
+      <thead class="thead-dark">
+        <th>ID</th>
+        <th>Tầng</th>
+        <th>Thao tác</th>
+      </thead>
+      <tbody>
+        <tr>
+          {% csrf_token %} {% for Tang in listTang %}
+          <td class="text-center">{{ Tang.id }}</td>
+          <td class="text-center">{{ Tang.ten_tang }}</td>
+          <td class="text-center">
+            <a
+              class="btn btn-outline-dark"
+              data-placement="top"
+              title="Xóa thiết bị"
+              data-target="#confirmDelete1Modal-{{ ThietBi.id_thiet_bi }}"
+              data-toggle="modal"
+              data-tooltip="tooltip"
+              id="delete-item"
+              ><i class="fa fa-trash-o" aria-hidden="true"></i
+            ></a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="col-3 p-md-4">
+    <div class="row element-button">
+      <div class="px-3 py-1 pr-1">
+        <button
+          type="button"
+          class="btn btn-dark"
+          data-toggle="modal"
+          data-target="#thietbiModal"
+        >
+          <i class="fa fa-plus" aria-hidden="true"> Loại thiết bị</i>
+        </button>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table
+        id="tang-table"
+        class="table table-sm table-striped bg-light table-condensed table-bordered"
+      >
+        <thead class="thead-dark">
+          <th>ID</th>
+          <th>Loại thiết bị</th>
+          <th>Thao tác</th>
+        </thead>
+        <tbody>
+          <tr>
+            {% csrf_token %} {% for LoaiThietBi in listLoaiThietBi %}
+            <td class="text-center">{{ LoaiThietBi.id }}</td>
+            <td class="text-center">{{ LoaiThietBi.ten_loaithietbi }}</td>
+            <td class="text-center">
+              <a
+                class="btn btn-outline-dark"
+                data-placement="top"
+                title="Xóa thiết bị"
+                data-target="#confirmDelete1Modal-{{ ThietBi.id_thiet_bi }}"
+                data-toggle="modal"
+                data-tooltip="tooltip"
+                id="delete-item"
+                ><i class="fa fa-trash-o" aria-hidden="true"></i
+              ></a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+<!-- Main Col END -->
+
+<!-- body-row END -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+  $(function () {
+    $('[data-tooltip="tooltip"]').tooltip();
+  });
+</script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#r-table").DataTable({
+      lengthMenu: [5, 15, 25, 50], // Các tùy chọn giới hạn số lượng mục trên bảng
+      language: {
+        lengthMenu: "Hiển thị _MENU_ thiết bị",
+        info: "Hiển thị từ _START_ đến _END_ của _TOTAL_ thiết bị",
+        infoEmpty: "Hiển thị từ 0 đến 0 của 0 thiết bị",
+        infoFiltered: "(lọc từ _MAX_ thiết bị)",
+        search: "Tìm kiếm:",
+        paginate: {
+          first: "Đầu",
+          last: "Cuối",
+          next: "Tiếp",
+          previous: "Trước",
+        },
+        zeroRecords: "Không tìm thấy thiết bị",
+        emptyTable: "Không có dữ liệu trong bảng",
+        loadingRecords: "Đang tải...",
+        processing: "Đang xử lý...",
+        aria: {
+          sortAscending: ": Sắp xếp tăng dần",
+          sortDescending: ": Sắp xếp giảm dần",
+        },
+      },
+      columnDefs: [
+        { orderable: false, targets: 1 },
+        { orderable: false, targets: 3 }, // Không cho phép sắp xếp cột thao tác
+      ],
+      order: [[0, "asc"]], // Sắp xếp cột đầu tiên theo thứ tự tăng dần
+      //"dom": '<"top"l>rt<"bottom"ip><"clear">' // Định dạng các thành phần của bảng
+    });
+  });
+</script>
+<script>
+  $(document).ready(function () {
+    $("#r-table").DataTable({
+      lengthMenu: [5, 15, 25, 50], // Các tùy chọn giới hạn số lượng mục trên bảng
+      language: {
+        lengthMenu: "Hiển thị _MENU_ thiết bị",
+        info: "Hiển thị từ _START_ đến _END_ của _TOTAL_ thiết bị",
+        infoEmpty: "Hiển thị từ 0 đến 0 của 0 thiết bị",
+        infoFiltered: "(lọc từ _MAX_ thiết bị)",
+        search: "Tìm kiếm:",
+        paginate: {
+          first: "Đầu",
+          last: "Cuối",
+          next: "Tiếp",
+          previous: "Trước",
+        },
+        zeroRecords: "Không tìm thấy thiết bị",
+        emptyTable: "Không có dữ liệu trong bảng",
+        loadingRecords: "Đang tải...",
+        processing: "Đang xử lý...",
+        aria: {
+          sortAscending: ": Sắp xếp tăng dần",
+          sortDescending: ": Sắp xếp giảm dần",
+        },
+      },
+      columnDefs: [
+        { orderable: false, targets: 1 },
+        { orderable: false, targets: 2 }, // Không cho phép sắp xếp cột thao tác
+      ],
+      order: [[0, "asc"]], // Sắp xếp cột đầu tiên theo thứ tự tăng dần
+      //"dom": '<"top"l>rt<"bottom"ip><"clear">' // Định dạng các thành phần của bảng
+    });
+  });
+</script>
+{% endblock %}

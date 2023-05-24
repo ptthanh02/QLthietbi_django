@@ -11,6 +11,7 @@ urlpatterns = [
     path('quanly/', views.ThietBi_view.as_view(), name='render_trangchinh'),
     path('tao_file.txt/', views.tao_file_txt, name='tao_file_txt'),
     path('tao_file.csv/', views.tao_file_csv, name='tao_file_csv'),
+    path('vitri/', views.render_vitri_thietbi, name='render_vitri_thietbi'),
     
     path('themthietbi/', views.render_themthietbi, name='render_themthietbi'),
     path('<str:pk>/', views.render_capnhap, name='render_capnhap'), # cập nhập thông tin thiết bị lúc thay đổi phòng
@@ -20,6 +21,7 @@ urlpatterns = [
     path('chinhsuathietbi/<str:id_thiet_bi>', views.render_chinhsuathietbi, name='render_chinhsuathietbi'),
     path('xoathietbi/<str:id_thiet_bi>', views.render_xoathietbi, name='render_xoathietbi'),
     path('xoanhieu/', views.ThietBi_view.as_view(), name='xoa_nhieu'),
+    
     
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

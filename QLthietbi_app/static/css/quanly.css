@@ -1,5 +1,4 @@
 body {
-  padding-top: 56px;
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -64,10 +63,6 @@ body {
   color: white;
   font-family: "Source Code Pro", monospace;
   text-transform: uppercase;
-}
-
-.sticky-offset {
-  top: 56px;
 }
 
 .dropdown-toggle::after {
@@ -144,12 +139,11 @@ table-responsive.dataTable thead .sorting_desc_disabled:before {
 }
 
 .dataTables_wrapper table.dataTable td,
-.dataTables_wrapper table.dataTable th{
+.dataTables_wrapper table.dataTable th {
   text-align: center;
   font-family: "Source Code Pro", monospace;
   vertical-align: middle;
 }
-
 
 .a-td {
   color: #343a40;
@@ -185,7 +179,7 @@ caption {
 }
 
 .xac-nhan-xoa1-modal .modal-dialog {
-  text-align: left; 
+  text-align: left;
   font-family: "arial";
 }
 
@@ -193,6 +187,7 @@ caption {
   margin: 2px;
 }
 
+/* -------------------------------Collapse Bar------------------------------------------- */
 #body-row {
   margin-left: 0;
   margin-right: 0;
@@ -205,10 +200,10 @@ caption {
 
 /* Sidebar sizes when expanded and expanded */
 .sidebar-expanded {
-  width: 230px;
+  width: 230px !important;;
 }
 .sidebar-collapsed {
-  width: 60px;
+  width: 60px !important;
 }
 
 /* Menu item*/
@@ -263,10 +258,12 @@ caption {
   padding-left: 10px;
 }
 
+
+
 /* ==================Bread crumbs==================== */
 .breadcrumb {
   background-color: #e6e6e6;
-  color : #343a40;
+  color: #343a40;
   padding: 0%;
   margin: 0%;
 }

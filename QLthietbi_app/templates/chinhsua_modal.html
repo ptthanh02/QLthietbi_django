@@ -85,7 +85,7 @@
           {{ form.mo_ta|as_crispy_field }}
           <div class="modal-footer">
             <button type="submit" value="Submit" class="btn btn-dark">
-              <i class="fa fa-floppy-o" aria-hidden="true"></i>
+              <i class="fa fa-floppy-o" aria-hidden="true" id="theSubmitButton" ></i>
               Lưu
             </button>
           </div>
@@ -94,3 +94,16 @@
     </form>
   </div>
 </div>
+<script>
+  $(function () {
+    $("#btheSubmitButton").click(function () {
+        var ValidStatus = $("#form").valid();
+        console.log(ValidStatus);
+    if (ValidStatus == false) {
+        return false;
+        $("#suathietbiModal").modal("show");
+    } 
+    });
+});
+</script>
+
