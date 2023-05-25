@@ -176,6 +176,7 @@ def render_chitietthietbi(request, id_thiet_bi):
         form = ThemThietBiForm(request.POST,request.FILES,instance=thietbi)
         if form.is_valid():
             form.save()
+            return redirect('QLthietbi_app:render_chitietthietbi', id_thiet_bi)
         else:
             form_error = True
     return render(request,"chitiettb.html", {'thietbi': thietbi, 'pk': pk, 'gia_mua_str': gia_mua_str, 'ngay_mua_str': ngay_mua_str,'ngay_bao_tri_str': ngay_bao_tri_str, 'form': form, 'form_error': form_error})

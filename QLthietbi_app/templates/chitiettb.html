@@ -226,6 +226,7 @@
       </div>
       <!-- MAIN -->
       <div class="col py-2">
+        <!-- buttons row -->
         <div class="row element-button">
           <div class="col px-3 py-1 pr-1">
             <a
@@ -249,123 +250,100 @@
               ><i class="fa fa-trash-o" aria-hidden="true"></i> Xóa thiết bị</a
             >
           </div>
-          <div class="col-12 p-md-2">
-            <div class="card">
-              <div class="card-content">
-                <div class="card-body">
-                  <h5 class="card-title bg-dark text-white text-center">
-                    <br /><i
-                      class="fa fa-info-circle fa-lg"
-                      aria-hidden="true"
-                    ></i
-                    >&nbsp Thông tin chi tiết thiết bị {{ pk }}<br /><br />
-                  </h5>
-                  {% comment %}
-                  <p class="card-text">Thông tin chi tiết thiết bị</p>
-                  {% endcomment %}
-                  <div class="form-row">
-                    <div class="form-group col-md-3 mb-0">
-                      <li style="font-size: 20px">
-                        <strong>Tên thiết bị:</strong> &nbsp{{ thietbi.ten_thiet_bi }}
-                      </li>
-                      <li style="font-size: 20px">
-                        <strong>Trạng thái:</strong> &nbsp
-                        <!-- Format keep -->
-                        {% if thietbi.tinh_trang == "hoatdong" %}
-                        <!-- Format keep -->
-                        <span class="badge badge-success"
-                          ><i class="fa fa-signal" aria-hidden="true"></i> Hoạt
-                          động</span
-                        >
-                        {% elif thietbi.tinh_trang == "dangbaotri" %}
-                        <span class="badge badge-warning"
-                          ><i
-                            class="fa fa-cog fa-spin fa-fw"
-                            aria-hidden="true"
-                          ></i>
-                          Bảo trì</span
-                        >
-                        {% else %}
-                        <span class="badge badge-danger"
-                          ><i
-                            class="fa fa-spinner fa-pulse fa-fw"
-                            aria-hidden="true"
-                          ></i>
-                          Hỏng</span
-                        >
-                        {% endif %}
-                      </li>
-                      <li style="font-size: 20px">
-                        <strong>Hình ảnh:</strong>
-                      </li>
-                    </div>
-                    <div class="form-group col-md-3 mb-0">
-                      <li style="font-size: 20px">
-                        <strong>Lần cuối bảo trì:</strong> &nbsp
-                        <!-- Format keep -->
-                        {{ ngay_bao_tri_str }}
-                        <!-- Format keep -->
-                      </li>
-                      <li style="font-size: 20px">
-                        <!-- Format keep -->
-                        <strong>Vị trí:</strong>&nbsp Tầng {{ thietbi.tang }},&nbsp Phòng {{thietbi.phong }}
-                        <!-- Format keep -->
-                      </li>
-                    </div>
-                    <div class="form-group col-md-3 mb-0">
-                      <li style="font-size: 20px">
-                        <strong>Giá mua:</strong> &nbsp{{ gia_mua_str }} VNĐ
-                      </li>
-                      <li style="font-size: 20px">
-                        <strong>Ngày mua:</strong> &nbsp{{ ngay_mua_str }}
-                      </li>
-                    </div>
-                    <div class="form-group col-md-3 mb-0">
-                      <li style="font-size: 20px">
-                        <strong>Loại:</strong> &nbsp{{ thietbi.loai_thiet_bi }}
-                      </li>
-                      <li style="font-size: 20px">
-                        <strong>Đơn vị cung cấp:</strong> &nbsp
-                        <!-- Format keep -->
-                        {{ thietbi.don_vi_cung_cap }}
-                        <!-- Format keep -->
-                      </li>
-                    </div>
-                  </div>
-                  <br />
-                  <div class="form-row">
-                    <div class="form-group col-md-6 mb-0">
-                      <img
-                        src="{{thietbi.hinh_anh.url}}"
-                        alt="Hình ảnh thiết bị"
-                        width="600"
-                        height="600"
-                      />
-                    </div>
-                    <div class="form-group col-md-6 mb-0 mt-5">
-                      <li style="font-size: 20px">
-                        <strong>Mô tả:</strong> &nbsp{{ thietbi.mo_ta }}
-                      </li>
-                    </div>
-                  </div>
-                </div>
+        </div>
+        <!-- buttons row -->
+        <!-- content -->
+        <br />
+        <div class="card">
+          <h5 class="card-header bg-dark text-white">
+            <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp Thông tin
+            thiết bị {{ pk }}
+          </h5>
+          <div class="card-body">
+            <p class="card-text"></p>
+            <div class="row">
+              <div class="col-4">
+                <img
+                  src="{{thietbi.hinh_anh.url}}"
+                  alt="Hình ảnh thiết bị"
+                  width="500"
+                  height="500"
+                />
+              </div>
+              <div class="col-4">
+                <i class="fa fa-cube" aria-hidden="true"></i>
+                <b>&nbsp Tên thiết bị:</b> {{thietbi.ten_thiet_bi}}
+                <hr />
+                <i class="fa fa-cubes" aria-hidden="true"></i>
+                <b>&nbsp Loại thiết bị:</b> {{thietbi.loai_thiet_bi}}
+                <hr />
+                <i class="fa fa-rss" aria-hidden="true"></i>
+                <b>&nbsp Trạng thái: </b>
+                {% if thietbi.tinh_trang == "hoatdong" %}
+                <!-- Format keep -->
+                <span class="badge badge-success"
+                  ><i class="fa fa-signal" aria-hidden="true"></i> Hoạt
+                  động</span
+                >
+                <!-- Format keep -->
+                {% elif thietbi.tinh_trang == "dangbaotri" %}
+                <span class="badge badge-warning"
+                  ><i class="fa fa-cog fa-spin fa-fw" aria-hidden="true"></i>
+                  Bảo trì</span
+                >
+                <!-- Format keep -->
+                {% else %}
+                <!-- Format keep -->
+                <span class="badge badge-danger"
+                  ><i
+                    class="fa fa-spinner fa-pulse fa-fw"
+                    aria-hidden="true"
+                  ></i>
+                  Hỏng</span
+                >
+                <!-- Format keep -->
+                {% endif %}
+                <!-- Format keep -->
+                <hr />
+                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                <b>&nbsp Vị trí:</b> Phòng {{thietbi.phong}}, Tầng {{thietbi.tang}}
+                <hr />
+                <i class="fa fa-money" aria-hidden="true"></i>
+                <b>&nbsp Giá mua:</b> {{ gia_mua_str }} VNĐ
+                <hr />
+                <i class="fa fa-calendar" aria-hidden="true"></i>
+                <b>&nbsp Ngày mua:</b> {{ ngay_mua_str }}
+                <hr />
+                <i class="fa fa-handshake-o" aria-hidden="true"></i>
+                <b>&nbsp Đơn vị cung cấp:</b> {{ thietbi.don_vi_cung_cap }}
+                <hr />
+                <i class="fa fa-calendar-o" aria-hidden="true"></i>
+                <b>&nbsp  Lần cuối bảo trì:</b> {{ ngay_bao_tri_str }}
+              </div>
+              <div class="col-4">
+                <b> Mô tả:</b> {{ thietbi.mo_ta }}
               </div>
             </div>
           </div>
+          <!-- card body -->
         </div>
+        <!-- card -->
+        <!-- content -->
       </div>
+      <!-- col row -->
     </div>
+    <!-- body row -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
       $("#suathietbiform #id_tang").change(function () {
         var url = $("#suathietbiform").attr("data-device-url");
         var tangId = $(this).val();
-        if (tangId == "") {
+        /*if (tangId == "") {
           $("#suathietbiform #id_phong").html(
             "<option value=''>---------</option>"
           );
           return;
-        }
+        }*/
         $.ajax({
           url: url,
           data: {
