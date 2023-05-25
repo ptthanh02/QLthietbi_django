@@ -165,6 +165,7 @@ def load_phong(request):
     return render(request, 'phong_dropdown_list_options.html', {'listPhong': listPhong})
 
 def render_chitietthietbi(request, id_thiet_bi):
+    form_error = False
     pk = id_thiet_bi
     thietbi = ThietBi.objects.get(id_thiet_bi=id_thiet_bi)
     gia_mua_str = "{:,.0f}".format(thietbi.gia_mua)
@@ -175,9 +176,9 @@ def render_chitietthietbi(request, id_thiet_bi):
         form = ThemThietBiForm(request.POST,request.FILES,instance=thietbi)
         if form.is_valid():
             form.save()
-            form = ThemThietBiForm()
-            return render(request,"chitiettb.html", {'thietbi': thietbi, 'pk': pk, 'gia_mua_str': gia_mua_str, 'ngay_mua_str': ngay_mua_str,'ngay_bao_tri_str': ngay_bao_tri_str, 'form': form})
-    return render(request,"chitiettb.html", {'thietbi': thietbi, 'pk': pk, 'gia_mua_str': gia_mua_str, 'ngay_mua_str': ngay_mua_str,'ngay_bao_tri_str': ngay_bao_tri_str, 'form': form})
+        else:
+            form_error = True
+    return render(request,"chitiettb.html", {'thietbi': thietbi, 'pk': pk, 'gia_mua_str': gia_mua_str, 'ngay_mua_str': ngay_mua_str,'ngay_bao_tri_str': ngay_bao_tri_str, 'form': form, 'form_error': form_error})
     
 def render_xoathietbi(request, id_thiet_bi):
     thietbi = ThietBi.objects.get(id_thiet_bi=id_thiet_bi)
@@ -197,5 +198,6 @@ def render_vitri_thietbi(request):
     listPhong = Phong.objects.all()
     listTang = Tang.objects.all()
     listLoaiThietBi = LoaiThietBi.objects.all()
-    return render(request, 'vitri_thietbi.html', {'listPhong': listPhong, 'listTang': listTang, 'listLoaiThietBi': listLoaiThietBi})
+    ThietBiCount = ThietBi.objects.all().count()
+    return render(request, 'vitri_thietbi.html', {'listPhong': listPhong, 'listTang': listTang, 'listLoaiThietBi': listLoaiThietBi, 'ThietBiCount': ThietBiCount})
 

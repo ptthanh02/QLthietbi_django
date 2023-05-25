@@ -46,3 +46,43 @@ class ThemThietBiForm(forms.ModelForm):
             raise forms.ValidationError("không được lớn hơn ngày hiện tại.")
         return ngay_mua
     
+class LoaiThietBiForm(forms.ModelForm):
+        
+        class Meta:
+            model = LoaiThietBi
+            fields = ('ten_loaithietbi',)
+            widgets = {
+                'ten_loaithietbi': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nhập tên loại thiết bị'}),
+            }
+    
+class TangForm(forms.ModelForm):
+    
+    class Meta:
+        model = Tang
+        fields = ('ten_tang',)
+        widgets = {
+            'ten_tang': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nhập tên tầng'}),
+        }
+        
+class PhongForm(forms.ModelForm):
+    
+    class Meta:
+        model = Phong
+        fields = ('ten_phong', 'tang')
+        widgets = {
+            'ten_phong': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nhập tên phòng'}),
+            'tang': forms.Select(attrs={'class': 'form-control'}),
+        }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['phong'].queryset = Phong.objects.none()
+        
+        if 'tang' in self.data:
+            try:
+                tang_id = int(self.data.get('tang'))
+                self.fields['phong'].queryset = Phong.objects.filter(tang_id=tang_id).order_by('ten_phong')
+            except (ValueError, TypeError):
+                pass
+        elif self.instance.pk:
+            self.fields['phong'].queryset = self.instance.tang.phong_set.order_by('ten_phong')
