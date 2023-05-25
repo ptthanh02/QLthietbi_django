@@ -135,10 +135,10 @@
               <span class="menu-collapsed">Thiết bị</span>
             </a>
             <a
-              href="#"
+              href="{% url 'QLthietbi_app:render_vitri_thietbi' %}"
               class="list-group-item list-group-item-action bg-dark text-white"
             >
-              <span class="menu-collapsed">Phòng</span>
+              <span class="menu-collapsed">Danh mục</span>
             </a>
             <a
               href="#"
@@ -306,7 +306,22 @@
                 <!-- Format keep -->
                 <hr />
                 <i class="fa fa-map-marker" aria-hidden="true"></i>
+                <!-- Format keep -->
+                {% if thietbi.phong == None and thietbi.tang == None %}
+                <!-- Format keep -->
+                <b>&nbsp Vị trí:</b> Chưa cập nhật vị trí
+                <!-- Format keep -->
+                {% elif thietbi.tang == None and thietbi.phong != None %}
+                <!-- Format keep -->
+                <b>&nbsp Vị trí:</b> Phòng {{thietbi.phong}}, Chưa cập nhật tầng
+                <!-- Format keep -->
+                {% elif thietbi.tang != None and thietbi.phong == None %}
+                <!-- Format keep -->
+                <b>&nbsp Vị trí:</b> Chưa cập nhật phòng, Tầng {{thietbi.tang}}
+                <!-- Format keep -->
+                {% else %}
                 <b>&nbsp Vị trí:</b> Phòng {{thietbi.phong}}, Tầng {{thietbi.tang}}
+                {% endif %}
                 <hr />
                 <i class="fa fa-money" aria-hidden="true"></i>
                 <b>&nbsp Giá mua:</b> {{ gia_mua_str }} VNĐ

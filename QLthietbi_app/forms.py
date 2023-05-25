@@ -20,18 +20,18 @@ class ThemThietBiForm(forms.ModelForm):
             'don_vi_cung_cap': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nhập đơn vị cung cấp'}),
         }
         
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['phong'].queryset = Phong.objects.none()
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['phong'].queryset = Phong.objects.none()
         
-        if 'tang' in self.data:
-            try:
-                tang_id = int(self.data.get('tang'))
-                self.fields['phong'].queryset = Phong.objects.filter(tang_id=tang_id).order_by('ten_phong')
-            except (ValueError, TypeError):
-                pass
-        elif self.instance.pk:
-            self.fields['phong'].queryset = self.instance.tang.phong_set.order_by('ten_phong')
+    #     if 'tang' in self.data:
+    #         try:
+    #             tang_id = int(self.data.get('tang'))
+    #             self.fields['phong'].queryset = Phong.objects.filter(tang_id=tang_id).order_by('ten_phong')
+    #         except (ValueError, TypeError):
+    #             pass
+    #     elif self.instance.pk:
+    #         self.fields['phong'].queryset = self.instance.tang.phong_set.order_by('ten_phong')
             
     def clean_gia_mua(self):
         gia_mua = self.cleaned_data.get('gia_mua')
@@ -73,16 +73,3 @@ class PhongForm(forms.ModelForm):
             'ten_phong': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nhập tên phòng'}),
             'tang': forms.Select(attrs={'class': 'form-control'}),
         }
-        
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['phong'].queryset = Phong.objects.none()
-        
-        if 'tang' in self.data:
-            try:
-                tang_id = int(self.data.get('tang'))
-                self.fields['phong'].queryset = Phong.objects.filter(tang_id=tang_id).order_by('ten_phong')
-            except (ValueError, TypeError):
-                pass
-        elif self.instance.pk:
-            self.fields['phong'].queryset = self.instance.tang.phong_set.order_by('ten_phong')

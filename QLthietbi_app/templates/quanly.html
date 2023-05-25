@@ -122,9 +122,37 @@
                       height="100"
                   /></a>
                 </td>
+                <!-- Format keep -->
+                {% if ThietBi.loai_thiet_bi == None %}
+                <!-- Format keep -->
+                <td>Loại thiết bị đã bị xóa</td>
+                <!-- Format keep -->
+                {% else %}
+                <!-- Format keep -->
                 <td>{{ThietBi.loai_thiet_bi}}</td>
+                <!-- Format keep -->
+                {% endif %}
+                <!-- Format keep -->
+                {% if ThietBi.tang == None %}
+                <!-- Format keep -->
+                <td>Tầng đã bị xóa</td>
+                <!-- Format keep -->
+                {% else %}
+                <!-- Format keep -->
                 <td>Tầng {{ThietBi.tang}}</td>
+                <!-- Format keep -->
+                {% endif %}
+                <!-- Format keep -->
+                {% if ThietBi.phong == None %}
+                <!-- Format keep -->
+                <td>Phòng đã bị xóa</td>
+                <!-- Format keep -->
+                {% else %}
+                <!-- Format keep -->
                 <td>Phòng {{ThietBi.phong}}</td>
+                <!-- Format keep -->
+                {% endif %}
+                 <!-- Format keep -->
                 {% if ThietBi.tinh_trang == "hoatdong" %}
                 <td>
                   <span class="badge badge-success"

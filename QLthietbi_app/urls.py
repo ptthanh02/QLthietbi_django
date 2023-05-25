@@ -12,6 +12,12 @@ urlpatterns = [
     path('tao_file.txt/', views.tao_file_txt, name='tao_file_txt'),
     path('tao_file.csv/', views.tao_file_csv, name='tao_file_csv'),
     path('vitri/', views.render_vitri_thietbi, name='render_vitri_thietbi'),
+    path('xoa_loai_thiet_bi/<int:pk>', views.xoa_loai_thiet_bi, name='xoa_loai_thiet_bi'),
+    path('xoa_phong/<int:pk>', views.xoa_phong, name='xoa_phong'),
+    path('xoa_tang/<int:pk>', views.xoa_tang, name='xoa_tang'),
+    path('them_loai_thiet_bi/', views.them_loai_thiet_bi, name='them_loai_thiet_bi'),
+    path('them_phong/', views.them_phong, name='them_phong'),
+    path('them_tang/', views.them_tang, name='them_tang'),
     
     path('themthietbi/', views.render_themthietbi, name='render_themthietbi'),
     path('<str:pk>/', views.render_capnhap, name='render_capnhap'), # cập nhập thông tin thiết bị lúc thay đổi phòng

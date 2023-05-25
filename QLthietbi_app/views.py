@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
-from .models import Phong, ThietBi, LoaiThietBi
+from .models import *
 from .forms import *
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -200,5 +200,44 @@ def render_vitri_thietbi(request):
     listTang = Tang.objects.all()
     listLoaiThietBi = LoaiThietBi.objects.all()
     ThietBiCount = ThietBi.objects.all().count()
-    return render(request, 'vitri_thietbi.html', {'listPhong': listPhong, 'listTang': listTang, 'listLoaiThietBi': listLoaiThietBi, 'ThietBiCount': ThietBiCount})
+    LoaiForm = LoaiThietBiForm()
+    Phongform = PhongForm()
+    Tangform = TangForm()
+    return render(request, 'vitri_thietbi.html', {'listPhong': listPhong, 'listTang': listTang, 'listLoaiThietBi': listLoaiThietBi, 'ThietBiCount': ThietBiCount, 'LoaiForm': LoaiForm, 'Phongform': Phongform, 'Tangform': Tangform})
+
+def them_loai_thiet_bi(request):
+    if request.method == "POST":
+        LoaiForm = LoaiThietBiForm(request.POST)
+        if LoaiForm.is_valid():
+            LoaiForm.save()
+            return redirect('QLthietbi_app:render_vitri_thietbi')
+        
+def them_phong(request):
+    if request.method == "POST":
+        Phongform = PhongForm(request.POST)
+        if Phongform.is_valid():
+            Phongform.save()
+            return redirect('QLthietbi_app:render_vitri_thietbi')
+        
+def them_tang(request):
+    if request.method == "POST":
+        Tangform = TangForm(request.POST)
+        if Tangform.is_valid():
+            Tangform.save()
+            return redirect('QLthietbi_app:render_vitri_thietbi')
+
+def xoa_loai_thiet_bi(request, pk):
+    loai_thiet_bi = LoaiThietBi.objects.get(pk=pk)
+    loai_thiet_bi.delete()
+    return redirect('QLthietbi_app:render_vitri_thietbi')
+
+def xoa_phong(request, pk):
+    phong = Phong.objects.get(pk=pk)
+    phong.delete()
+    return redirect('QLthietbi_app:render_vitri_thietbi')
+
+def xoa_tang(request, pk):
+    tang = Tang.objects.get(pk=pk)
+    tang.delete()
+    return redirect('QLthietbi_app:render_vitri_thietbi')
 
