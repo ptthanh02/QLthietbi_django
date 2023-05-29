@@ -80,13 +80,23 @@
               data-toggle="dropdown"
             >
               <span class="ml-2" style="color: white"
-                >Xin chào, {{user.username}}</span
+                >Xin chào, {{user.ten}}</span
               >
             </a>
             <div
               class="dropdown-menu dropdown-menu-right"
               aria-labelledby="navbarDropdownMenuLink"
             >
+              <a
+              class="dropdown-item"
+              href="{% url 'QLthietbi_app:hoso_user' user.id %}"
+              >Hồ sơ cá nhân</a
+              >
+              <a
+                class="dropdown-item"
+                href="{% url 'QLthietbi_app:doi_matkhau' %}"
+                >Đổi mật khẩu</a
+                >
               <a
                 class="dropdown-item"
                 href="{% url 'QLthietbi_app:perform_logout' %}"
@@ -143,7 +153,7 @@
               <span class="menu-collapsed">Danh mục</span>
             </a>
             <a
-              href="#"
+              href="{% url 'QLthietbi_app:render_baocaolist' %}"
               class="list-group-item list-group-item-action bg-dark text-white"
             >
               <span class="menu-collapsed">Báo cáo</span>
@@ -157,23 +167,23 @@
           >
             <div class="d-flex w-100 justify-content-start align-items-center">
               <span class="fa fa-user fa-fw mr-3"></span>
-              <span class="menu-collapsed">Hồ sơ cá nhân</span>
+              <span class="menu-collapsed">Tài khoản</span>
               <span class="submenu-icon ml-auto"></span>
             </div>
           </a>
           <!-- Submenu content -->
           <div id="submenu2" class="collapse sidebar-submenu">
             <a
-              href="#"
+              href="{% url 'QLthietbi_app:hoso_list' %}"
               class="list-group-item list-group-item-action bg-dark text-white"
             >
-              <span class="menu-collapsed">Settings</span>
-            </a>
+              <span class="menu-collapsed">Danh sách tài khoản</span>
+          </a>
             <a
-              href="#"
+              href="{% url 'QLthietbi_app:tao_user' %}"
               class="list-group-item list-group-item-action bg-dark text-white"
             >
-              <span class="menu-collapsed">Password</span>
+              <span class="menu-collapsed">Tạo tài khoản</span>
             </a>
           </div>
           <a href="#" class="bg-dark list-group-item list-group-item-action">

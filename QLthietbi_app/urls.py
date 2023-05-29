@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 from django.conf.urls.static import static
 from django.conf import settings
+from django.contrib.auth import views as auth_views
 
 app_name = 'QLthietbi_app'
 urlpatterns = [
@@ -18,7 +19,26 @@ urlpatterns = [
     path('them_loai_thiet_bi/', views.them_loai_thiet_bi, name='them_loai_thiet_bi'),
     path('them_phong/', views.them_phong, name='them_phong'),
     path('them_tang/', views.them_tang, name='them_tang'),
-    
+    path('taobaocao/<str:id_thiet_bi>', views.render_taobaocao, name='render_taobaocao'),
+    path('baocao/', views.render_baocaolist, name='render_baocaolist'),
+    path('xoabaocao/<int:pk>', views.xoa_baocao, name='xoabaocao'),
+    path('chinhsuabaocao/<int:pk>', views.chinh_sua_baocao, name='chinhsua_baocao'),
+    # -------------------------Kỹ thuật viên--------------------------------
+    path('danhsachthietbi/', views.DanhSachThietBi_view.as_view(), name='render_danhsachthietbi'),
+    path('danhsachbaocao/', views.render_baocaolist_ktv, name='render_baocaolist_ktv'),
+    path('nhansua_baocao/<int:pk>', views.nhansua_baocao, name='nhansua_baocao'),
+    path('baocao_danhan/', views.baocao_danhan, name='baocao_danhan'),
+    path('hoanthanh_baocao/<int:pk>', views.hoanthanh_baocao, name='hoanthanh_baocao'),
+    path('huynhan_baocao/<int:pk>', views.huynhan_baocao, name='huynhan_baocao'),
+    path('khongthe_suachua/<int:pk>', views.khongthe_suachua, name='khongthe_suachua'),
+    # -------------------------Tài khoản------------------------------------
+    path('hosocanhan/<int:id>', views.hoso_user, name='hoso_user'),
+    path('taotaikhoan/', views.tao_user, name='tao_user'),
+    path('danhsachtaikhoan/', views.hoso_list, name='hoso_list'),
+    path('xoataikhoan/<int:id>', views.hoso_xoa, name='hoso_xoa'),
+    path('chinhsuataikhoan/<int:id>', views.sua_user, name='sua_user'),
+    path('doimatkhau/', views.doi_matkhau, name='doi_matkhau'),
+    # -------------------------Tài khoản------------------------------------
     path('themthietbi/', views.render_themthietbi, name='render_themthietbi'),
     path('<str:pk>/', views.render_capnhap, name='render_capnhap'), # cập nhập thông tin thiết bị lúc thay đổi phòng
     path('ajax/laythongtinphong/', views.load_phong, name='ajax_load_phong'),

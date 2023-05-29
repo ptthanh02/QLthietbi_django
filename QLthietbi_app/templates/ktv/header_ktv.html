@@ -1,11 +1,4 @@
-{% load static %}
-<!-- Format keep -->
-{%load crispy_forms_tags %}
-<!-- Format keep -->
-{% include 'chinhsua_modal.html' %}
-<!-- Format keep -->
-{% include "xacnhanxoact_modal.html" %}
-<!-- Format keep -->
+{% load static %} {%load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -30,11 +23,18 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css"
+    />
     <link rel="stylesheet" href="../static/css/quanly.css" />
     <title>Trang chủ | Quản lý thiết bị</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-md" style="background-color: #e6e6e6">
+    <nav
+      class="navbar navbar-expand-md navbar"
+      style="background-color: #e6e6e6"
+    >
       <button
         class="navbar-toggler navbar-toggler-right"
         type="button"
@@ -58,16 +58,18 @@
       </a>
       <!-- Site map -->
       <ol class="breadcrumb">
+        {% comment %}
         <li class="breadcrumb-item">
-          <a href="{% url 'QLthietbi_app:render_trangchinh' %}"
-            ><i class="fa fa-home" aria-hidden="true"></i> Quản lý thiết bị</a
+          <a href="#"
+            ><i class="fa fa-home" aria-hidden="true"></i> Trang chính</a
           >
         </li>
+        {% endcomment %}
         <li class="breadcrumb-item active" aria-current="page">
-          Thông tin thiết bị
+          <i class="fa fa-home" aria-hidden="true"></i> Quản lý thiết bị
         </li>
       </ol>
-      <!-- Site map end -->
+      <!-- Site map ends -->
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item dropdown">
@@ -78,7 +80,7 @@
               data-toggle="dropdown"
             >
               <span class="ml-2" style="color: white"
-                >Xin chào, {{user.username}}</span
+                >Xin chào, {{user.ten}}</span
               >
             </a>
             <div
@@ -129,23 +131,23 @@
           <!-- Submenu content -->
           <div id="submenu1" class="collapse sidebar-submenu">
             <a
-              href="{% url 'QLthietbi_app:render_trangchinh' %}"
+              href="{% url 'QLthietbi_app:render_danhsachthietbi' %}"
               class="list-group-item list-group-item-action bg-dark text-white"
             >
               <span class="menu-collapsed">Thiết bị</span>
             </a>
             <a
-              href="{% url 'QLthietbi_app:render_vitri_thietbi' %}"
-              class="list-group-item list-group-item-action bg-dark text-white"
-            >
-              <span class="menu-collapsed">Danh mục</span>
-            </a>
-            <a
-              href="#"
+              href="{% url 'QLthietbi_app:render_baocaolist_ktv' %}"
               class="list-group-item list-group-item-action bg-dark text-white"
             >
               <span class="menu-collapsed">Báo cáo</span>
             </a>
+            <a
+              href="{% url 'QLthietbi_app:baocao_danhan' %}"
+              class="list-group-item list-group-item-action bg-dark text-white"
+            >
+              <span class="menu-collapsed">Báo cáo đã nhận<span class="badge badge-pill badge-primary ml-2"> {{ baoCaoCount }}</span></span>
+          </a>
           </div>
           <a
             href="#submenu2"
@@ -224,169 +226,10 @@
         </ul>
         <!-- List Group END-->
       </div>
-      <!-- MAIN -->
-      <div class="col py-2">
-        <!-- buttons row -->
-        <div class="row element-button">
-          <div class="col px-3 py-1 pr-1">
-            <a
-              href="{% url 'QLthietbi_app:render_trangchinh' %}"
-              class="btn btn-dark"
-              ><i class="fa fa-angle-double-left" aria-hidden="true"></i> Trở
-              lại</a
-            >
-            <a
-              href="{% url 'QLthietbi_app:render_chinhsuathietbi' thietbi.id_thiet_bi %}"
-              class="btn btn-dark"
-              data-target="#suathietbiModal"
-              data-toggle="modal"
-              ><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Chỉnh
-              sửa</a
-            >
-            <a
-              class="btn btn-dark"
-              data-target="#confirmDelete1ctModal-{{ pk }}"
-              data-toggle="modal"
-              ><i class="fa fa-trash-o" aria-hidden="true"></i> Xóa thiết bị</a
-            >
-          </div>
-        </div>
-        <!-- buttons row -->
-        <!-- content -->
-        <br />
-        <div class="card">
-          <h5 class="card-header bg-dark text-white">
-            <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp Thông tin
-            thiết bị {{ pk }}
-          </h5>
-          <div class="card-body">
-            <p class="card-text"></p>
-            <div class="row">
-              <div class="col-4">
-                <img
-                  src="{{thietbi.hinh_anh.url}}"
-                  alt="Hình ảnh thiết bị"
-                  width="500"
-                  height="500"
-                />
-              </div>
-              <div class="col-4">
-                <i class="fa fa-cube" aria-hidden="true"></i>
-                <b>&nbsp Tên thiết bị:</b> {{thietbi.ten_thiet_bi}}
-                <hr />
-                <i class="fa fa-cubes" aria-hidden="true"></i>
-                <!-- Format keep -->
-                {% if thietbi.loai_thiet_bi == None %}
-                <b>&nbsp Loại thiết bị:</b> Chưa cập nhật loại
-                {% else %}
-                <b>&nbsp Loại thiết bị:</b> {{thietbi.loai_thiet_bi}}
-                {% endif %}
-                <hr />
-                <i class="fa fa-rss" aria-hidden="true"></i>
-                <b>&nbsp Trạng thái: </b>
-                {% if thietbi.tinh_trang == "hoatdong" %}
-                <!-- Format keep -->
-                <span class="badge badge-success"
-                  ><i class="fa fa-signal" aria-hidden="true"></i> Hoạt
-                  động</span
-                >
-                <!-- Format keep -->
-                {% elif thietbi.tinh_trang == "dangbaotri" %}
-                <span class="badge badge-warning"
-                  ><i class="fa fa-cog fa-spin fa-fw" aria-hidden="true"></i>
-                  Bảo trì</span
-                >
-                <!-- Format keep -->
-                {% else %}
-                <!-- Format keep -->
-                <span class="badge badge-danger"
-                  ><i
-                    class="fa fa-spinner fa-pulse fa-fw"
-                    aria-hidden="true"
-                  ></i>
-                  Hỏng</span
-                >
-                <!-- Format keep -->
-                {% endif %}
-                <!-- Format keep -->
-                <hr />
-                <i class="fa fa-map-marker" aria-hidden="true"></i>
-                <!-- Format keep -->
-                {% if thietbi.phong == None and thietbi.tang == None %}
-                <!-- Format keep -->
-                <b>&nbsp Vị trí:</b> Chưa cập nhật vị trí
-                <!-- Format keep -->
-                {% elif thietbi.tang == None and thietbi.phong != None %}
-                <!-- Format keep -->
-                <b>&nbsp Vị trí:</b> Chưa cập nhật tầng, Phòng {{thietbi.phong}}
-                <!-- Format keep -->
-                {% elif thietbi.tang != None and thietbi.phong == None %}
-                <!-- Format keep -->
-                <b>&nbsp Vị trí:</b> Tầng {{thietbi.tang}}, chưa cập nhật phòng
-                <!-- Format keep -->
-                {% else %}
-                <b>&nbsp Vị trí:</b> Tầng {{thietbi.tang}}, Phòng {{thietbi.phong}}
-                {% endif %}
-                <hr />
-                <i class="fa fa-money" aria-hidden="true"></i>
-                <b>&nbsp Giá mua:</b> {{ gia_mua_str }} VNĐ
-                <hr />
-                <i class="fa fa-calendar" aria-hidden="true"></i>
-                <b>&nbsp Ngày mua:</b> {{ ngay_mua_str }}
-                <hr />
-                <i class="fa fa-handshake-o" aria-hidden="true"></i>
-                <b>&nbsp Đơn vị cung cấp:</b> {{ thietbi.don_vi_cung_cap }}
-                <hr />
-                <i class="fa fa-calendar-o" aria-hidden="true"></i>
-                <b>&nbsp  Lần cuối bảo trì:</b> {{ ngay_bao_tri_str }}
-              </div>
-              <div class="col-4">
-                <b> Mô tả:</b> {{ thietbi.mo_ta }}
-              </div>
-            </div>
-          </div>
-          <!-- card body -->
-        </div>
-        <!-- card -->
-        <!-- content -->
-      </div>
-      <!-- col row -->
+      {% block content %}
+      <!-- Format keep -->
+      {% endblock %}
     </div>
-    <!-- body row -->
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-      $("#suathietbiform #id_tang").change(function () {
-        var url = $("#suathietbiform").attr("data-device-url");
-        var tangId = $(this).val();
-        /*if (tangId == "") {
-          $("#suathietbiform #id_phong").html(
-            "<option value=''>---------</option>"
-          );
-          return;
-        }*/
-        $.ajax({
-          url: url,
-          data: {
-            tang_id: tangId,
-          },
-          success: function (data) {
-            $("#suathietbiform #id_phong").html(data);
-          },
-        });
-      });
-      $.when($("#suathietbiform #id_tang").trigger("change")).done(function (
-        sua_data
-      ) {
-        console.log(sua_data);
-      });
-    </script>
-    {% if form.errors %}
-    <script>
-      $(document).ready(function () {
-        $("#suathietbiModal").modal("show");
-      });
-    </script>
-    {% endif %}
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
     <script>
       // Hide submenus
@@ -415,7 +258,6 @@
         } else {
           SeparatorTitle.addClass("d-flex");
         }
-
         // Collapse/Expand icon
         $("#collapse-icon").toggleClass(
           "fa-angle-double-left fa-angle-double-right"

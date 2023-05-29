@@ -21,3 +21,15 @@ user.save()
 # Tạo một quản lý
 quanly = QuanLy(user=user)
 quanly.save()
+
+---------------------Lệnh Python Shell để tạo KTV---------------------------
+from QLthietbi_app.models import QuanLy, CustomUser, KyThuatVien
+from django.utils import timezone
+from datetime import date
+# Tạo một user
+user = CustomUser.objects.create_user(username='ktv', password='123',chuc_vu ='kythuatvien', email='ktv@mail.com', ho='Pham', ten='Tien Thanh',gioi_tinh='nam', ngay_sinh=date(2000, 1, 1), sdt='0123456781',ngay_vao_lam=timezone.now())
+user.save()
+
+# Tạo một Kỹ thuật viên 
+ktv = KyThuatVien(user=user)
+ktv.save()

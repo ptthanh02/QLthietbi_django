@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Max
 from django.db.models import F
+from django.utils import timezone
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, password=None, **extra_fields):
@@ -26,22 +27,25 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                                 help_text=_('Yêu cầu 30 ký tự hoặc ít hơn. Chỉ chứa chữ cái, số và các ký tự @/./+/-/_'),
                                 error_messages={
                                     'unique': _("Tên đăng nhập đã tồn tại."),
-                                })
-    ho = models.CharField(max_length=30, verbose_name='Họ')
-    ten = models.CharField(max_length=30, verbose_name='Tên')
+                                },
+                                null = False, blank = False,
+                                )
+    ho = models.CharField(max_length=30, verbose_name='Họ', blank=False, null=True)
+    ten = models.CharField(max_length=30, verbose_name='Tên', blank=False, null=True)
     
     GENDER_CHOICES = [
         ('nam', 'Nam'),
         ('nu', 'Nữ'),
         ('khac', 'Khác'),
     ]
-    gioi_tinh = models.CharField(max_length=6, choices=GENDER_CHOICES, default='Chưa đặt giới tính', blank=True, null=True, verbose_name='Giới tính')
+    gioi_tinh = models.CharField(max_length=6, choices=GENDER_CHOICES, default='Chưa đặt giới tính', blank=False, null=True, verbose_name='Giới tính')
     
     USER_ROLES = [('quanly', 'Quản Lý'),('kythuatvien', 'Kỹ Thuật Viên'),]
-    chuc_vu = models.CharField(choices=USER_ROLES, max_length=20, default='Chưa đặt chức vụ',verbose_name='Chức vụ')
-
-    email = models.EmailField(verbose_name='Địa chỉ email', unique=True)
+    chuc_vu = models.CharField(choices=USER_ROLES, max_length=20, default='Chưa đặt chức vụ',verbose_name='Chức vụ', blank=False, null=True)
+    anh_the = models.ImageField(upload_to='anhthe/', blank=True, null=True, verbose_name='Ảnh thẻ')
+    email = models.EmailField(verbose_name='Địa chỉ email', unique=True, null=False, blank=False)
     sdt = models.CharField(max_length=10, null=True, blank=True, verbose_name='Số điện thoại')
+    dia_chi = models.CharField(max_length=100, null=True, blank=True, verbose_name='Địa chỉ')
     ngay_sinh = models.DateField(null=True, blank=True, verbose_name='Ngày sinh')
     ngay_vao_lam = models.DateField(null=True, blank=True, verbose_name='Ngày vào làm')
     is_active = models.BooleanField(default=True, verbose_name='Đang làm việc')
@@ -58,6 +62,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.ten
+    
+    def in_chuc_vu(self):
+        if self.chuc_vu == 'quanly':
+            return f"Quản lý"
+        elif self.chuc_vu == 'kythuatvien':
+            return f"Kỹ thuật viên"
    
     class Meta:
         verbose_name_plural = 'Người dùng'
@@ -136,7 +146,7 @@ class ThietBi(models.Model):
     loai_thiet_bi = models.ForeignKey(LoaiThietBi, on_delete=models.SET_NULL, null=True, verbose_name='Loại thiết bị')
     phong = models.ForeignKey(Phong, on_delete=models.SET_NULL, null=True,blank=False, verbose_name='Phòng')
     tang = models.ForeignKey(Tang, on_delete=models.SET_NULL, null=True,blank=False, verbose_name='Tầng')
-    hinh_anh = models.ImageField(upload_to='images/', blank=False, null=True, verbose_name='Hình ảnh')
+    hinh_anh = models.ImageField(upload_to='anhthietbi/', blank=False, null=True, verbose_name='Hình ảnh')
     ngay_mua = models.DateField(verbose_name='Ngày mua')
     gia_mua = models.IntegerField(verbose_name='Giá mua')
     tinh_trang_choices = [
@@ -162,5 +172,29 @@ class ThietBi(models.Model):
     
     def __str__(self):
         return self.ten_thiet_bi
+    
+class BaoCao(models.Model):
+    tieu_de = models.CharField(max_length=30, verbose_name='Tiêu đề báo cáo')
+    trang_thai_choices = [ 
+        ('dangxuly', 'Đang xử lý'),
+        ('daxuly', 'Đã xử lý'),
+    ]
+    trang_thai = models.CharField(max_length=10, choices=trang_thai_choices, default='dangxuly', verbose_name='Trạng thái')
+    noi_dung = models.TextField(verbose_name='Nội dung')
+    thiet_bi = models.ForeignKey(ThietBi, on_delete=models.SET_NULL, verbose_name='Thiết bị cần sửa chữa', null=True)
+    ngay_bao_cao = models.DateField(verbose_name='Ngày báo cáo',default=timezone.now)
+    nguoi_bao_cao = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, verbose_name='Người báo cáo',related_name='bao_cao_nguoi_bao_cao')
+    nguoi_nhan_bao_cao = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, verbose_name='Người nhận báo cáo',related_name='bao_cao_nguoi_nhan_bao_cao')
+    nguoi_hoan_thanh = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, verbose_name='Người hoàn thành',related_name='bao_cao_nguoi_hoan_thanh')
+    
+    thiet_bi_disabled = models.ForeignKey(ThietBi, on_delete=models.SET_NULL, verbose_name='Thiết bị cần sửa chữa', null=True, blank=True, related_name='bao_cao_thiet_bi_disabled')
+    ngay_bao_cao_disabled = models.DateField(verbose_name='Ngày báo cáo',default=timezone.now, null=True, blank=True)
+    nguoi_bao_cao_disabled = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True,verbose_name='Người báo cáo',related_name='bao_cao_nguoi_bao_cao_disabled')
+    
+    class Meta:
+        verbose_name_plural = 'Báo cáo'
+    
+    def __str__(self):
+        return self.tieu_de
 
 

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
-from .models import Phong,Tang, LoaiThietBi, ThietBi
+from .models import *
 from django import forms
 
 class CustomUserAdmin(UserAdmin):
@@ -54,7 +54,14 @@ class ThietBiAdmin(admin.ModelAdmin):
     search_fields = ('ten_thiet_bi', 'loai_thiet_bi', 'tinh_trang')
     ordering = ('id_thiet_bi',)
     list_per_page = 10
-
+    
+class BaoCaoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'tieu_de', 'ngay_bao_cao', 'trang_thai', 'nguoi_bao_cao')
+    list_per_page = 10
+    ordering = ('id',)
+    
+    
+admin.site.register(BaoCao, BaoCaoAdmin)
 admin.site.register(Tang, TangAdmin)
 admin.site.register(Phong, PhongAdmin)
 admin.site.register(LoaiThietBi, LoaiThietBiAdmin)
