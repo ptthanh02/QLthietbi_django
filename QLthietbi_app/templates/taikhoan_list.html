@@ -1,4 +1,4 @@
-{% extends 'header.html' %}
+{% extends 'header_taikhoan.html' %}
 <!-- Format keep -->
 {% block content %}
 <!-- Format keep -->
@@ -29,7 +29,11 @@
                     <td class="text-center">{{ user.id }}</td>
                     <td class="text-center">{{ user.username }}</td>
                     <td class="text-center">{{ user.get_full_name }}</td>
-                    <td class="text-center">{{ user.chuc_vu }}</td>
+                    {% if user.chuc_vu == 'quanly' %}
+                    <td class="text-center">Quản lý</td>
+                    {% elif user.chuc_vu == 'kythuatvien' %}
+                    <td class="text-center">Kỹ thuật viên</td>
+                    {% endif %}
                     <td class="text-center">{{ user.sdt }}</td>
                     <td class="text-center">{{ user.email }}</td>
                     <td class="text-center">{{ user.gioi_tinh }}</td>

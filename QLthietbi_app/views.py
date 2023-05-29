@@ -388,6 +388,69 @@ def khongthe_suachua(request,pk):
     baoCao.save()
     return redirect('QLthietbi_app:render_baocaolist_ktv')
 
+def render_chitietthietbi_ktv(request, id_thiet_bi):
+    baoCaoCount = BaoCao.objects.filter(nguoi_nhan_bao_cao = request.user).count()
+    form_error = False
+    pk = id_thiet_bi
+    thietbi = ThietBi.objects.get(id_thiet_bi=id_thiet_bi)
+    gia_mua_str = "{:,.0f}".format(thietbi.gia_mua)
+    ngay_mua_str = thietbi.ngay_mua.strftime('%d/%m/%Y') if thietbi.ngay_mua else 'Không có dữ liệu'
+    ngay_bao_tri_str = thietbi.ngay_bao_tri.strftime('%d/%m/%Y') if thietbi.ngay_bao_tri else 'Chưa bảo trì'
+    form = ThemThietBiForm(instance=thietbi)
+    if request.method == "POST":
+        form = ThemThietBiForm(request.POST,request.FILES,instance=thietbi)
+        if form.is_valid():
+            form.save()
+            return redirect('QLthietbi_app:render_chitietthietbi_ktv', id_thiet_bi)
+        else:
+            form_error = True
+    return render(request,"ktv/chitiettb_ktv.html", {'thietbi': thietbi, 'pk': pk, 'gia_mua_str': gia_mua_str, 'ngay_mua_str': ngay_mua_str,'ngay_bao_tri_str': ngay_bao_tri_str, 'form': form, 'form_error': form_error, 'baoCaoCount': baoCaoCount})
+
+def hoso_user_ktv(request, id):
+    user = get_object_or_404(CustomUser, id=id)
+    baoCaoCount = BaoCao.objects.filter(nguoi_nhan_bao_cao = request.user).count()
+    if request.method == 'POST':
+        form = HoSoForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            return redirect('QLthietbi_app:hoso_user_ktv')
+    else:
+        form = HoSoForm(instance=user)
+    
+    return render(request, 'ktv/hoso_user_ktv.html', {'form': form, 'baoCaoCount': baoCaoCount})
+
+def capnhap_user_ktv(request, id):
+    user = get_object_or_404(CustomUser, id=id)
+    success = False
+    baoCaoCount = BaoCao.objects.filter(nguoi_nhan_bao_cao = request.user).count()
+    if request.method == 'POST':
+        form = SuaHoSoForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            success = True
+            return render(request, 'ktv/capnhap_user_ktv.html', {'form': form, 'success': success})
+    else:
+        form = SuaHoSoForm(instance=user)
+    
+    return render(request, 'ktv/capnhap_user_ktv.html', {'form': form, 'success': success, 'baoCaoCount': baoCaoCount})
+
+def doi_matkhau_ktv(request):
+    user = request.user
+    success = False
+    baoCaoCount = BaoCao.objects.filter(nguoi_nhan_bao_cao = request.user).count()
+    if request.method == 'POST':
+        form = ChangePasswordForm(user, request.POST)
+        if form.is_valid():
+            form.save()
+            success = True
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            return render(request, 'ktv/doi_matkhau_ktv.html', {'form': form, 'success': success})
+    else:
+        form = ChangePasswordForm(user)
+
+    return render(request, 'ktv/doi_matkhau_ktv.html', {'form': form, 'success': success, 'baoCaoCount': baoCaoCount})
 # -------------------------------Hồ Sơ----------------------------------
 def tao_user(request):
     if request.method == 'POST':
@@ -419,11 +482,27 @@ def hoso_user(request, id):
         form = HoSoForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             form.save()
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return redirect('QLthietbi_app:hoso_user')
     else:
         form = HoSoForm(instance=user)
     
     return render(request, 'hoso_user.html', {'form': form})
+
+def capnhap_user(request, id):
+    user = get_object_or_404(CustomUser, id=id)
+    success = False
+    if request.method == 'POST':
+        form = SuaHoSoForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            success = True
+            return render(request, 'capnhap_user.html', {'form': form, 'success': success})
+    else:
+        form = SuaHoSoForm(instance=user)
+    
+    return render(request, 'capnhap_user.html', {'form': form, 'success': success})
 
 def hoso_list(request):
     listUser = CustomUser.objects.all()

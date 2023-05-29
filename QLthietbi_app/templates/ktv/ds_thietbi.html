@@ -58,7 +58,7 @@
               <tr>
                 <td>
                   <a
-                    href="{% url 'QLthietbi_app:render_chitietthietbi' ThietBi.id_thiet_bi %}"
+                    href="{% url 'QLthietbi_app:render_chitietthietbi_ktv' ThietBi.id_thiet_bi %}"
                     class="a-td"
                   >
                     {{ThietBi.id_thiet_bi}}
@@ -66,14 +66,14 @@
                 </td>
                 <td>
                   <a
-                    href="{% url 'QLthietbi_app:render_chitietthietbi' ThietBi.id_thiet_bi %}"
+                    href="{% url 'QLthietbi_app:render_chitietthietbi_ktv' ThietBi.id_thiet_bi %}"
                     class="a-td"
                     >{{ThietBi.ten_thiet_bi}}</a
                   >
                 </td>
                 <td>
                   <a
-                    href="{% url 'QLthietbi_app:render_chitietthietbi' ThietBi.id_thiet_bi %}"
+                    href="{% url 'QLthietbi_app:render_chitietthietbi_ktv' ThietBi.id_thiet_bi %}"
                     class="a-td"
                     ><img
                       src="{{ThietBi.hinh_anh.url}}"
@@ -139,7 +139,7 @@
                 {% endif %}
                 <td>
                   <a
-                    href="{% url 'QLthietbi_app:render_chitietthietbi' ThietBi.id_thiet_bi %}"
+                    href="{% url 'QLthietbi_app:render_chitietthietbi_ktv' ThietBi.id_thiet_bi %}"
                     class="btn btn-outline-dark"
                     data-tooltip="tooltip"
                     data-placement="top"

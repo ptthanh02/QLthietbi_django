@@ -31,6 +31,9 @@ urlpatterns = [
     path('hoanthanh_baocao/<int:pk>', views.hoanthanh_baocao, name='hoanthanh_baocao'),
     path('huynhan_baocao/<int:pk>', views.huynhan_baocao, name='huynhan_baocao'),
     path('khongthe_suachua/<int:pk>', views.khongthe_suachua, name='khongthe_suachua'),
+    path('hosocanhan_ktv/<int:id>', views.hoso_user_ktv, name='hoso_user_ktv'),
+    path('capnhapthongtin_ktv/<int:id>', views.capnhap_user_ktv, name='capnhap_user_ktv'),
+    path('doimatkhau_ktv/', views.doi_matkhau_ktv, name='doi_matkhau_ktv'),
     # -------------------------Tài khoản------------------------------------
     path('hosocanhan/<int:id>', views.hoso_user, name='hoso_user'),
     path('taotaikhoan/', views.tao_user, name='tao_user'),
@@ -38,11 +41,13 @@ urlpatterns = [
     path('xoataikhoan/<int:id>', views.hoso_xoa, name='hoso_xoa'),
     path('chinhsuataikhoan/<int:id>', views.sua_user, name='sua_user'),
     path('doimatkhau/', views.doi_matkhau, name='doi_matkhau'),
-    # -------------------------Tài khoản------------------------------------
+    path('capnhapthongtin/<int:id>', views.capnhap_user, name='capnhap_user'),
+    # ------------------------------Ajax------------------------------------
     path('themthietbi/', views.render_themthietbi, name='render_themthietbi'),
     path('<str:pk>/', views.render_capnhap, name='render_capnhap'), # cập nhập thông tin thiết bị lúc thay đổi phòng
     path('ajax/laythongtinphong/', views.load_phong, name='ajax_load_phong'),
     
+    path('ktvthietbi/<str:id_thiet_bi>', views.render_chitietthietbi_ktv, name='render_chitietthietbi_ktv'),
     path('thietbi/<str:id_thiet_bi>', views.render_chitietthietbi, name='render_chitietthietbi'),
     path('chinhsuathietbi/<str:id_thiet_bi>', views.render_chinhsuathietbi, name='render_chinhsuathietbi'),
     path('xoathietbi/<str:id_thiet_bi>', views.render_xoathietbi, name='render_xoathietbi'),

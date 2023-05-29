@@ -227,12 +227,11 @@ class SuaHoSoForm(forms.ModelForm):
     
     class Meta:
         model = CustomUser
-        fields = ('ho', 'ten', 'gioi_tinh', 'chuc_vu', 'anh_the', 'ngay_sinh','ngay_vao_lam', 'dia_chi', 'sdt', 'email')
+        fields = ('ho', 'ten', 'gioi_tinh', 'anh_the', 'ngay_sinh','ngay_vao_lam', 'dia_chi', 'sdt', 'email')
         widgets = {
             'ho': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nhập họ'}),
             'ten': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nhập tên'}),
             'gioi_tinh': forms.Select(attrs={'class': 'form-control'}),
-            'chuc_vu': forms.Select(attrs={'class': 'form-control'}),
             'anh_the': forms.FileInput(attrs={'class': 'form-control'}),
             'ngay_sinh': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'ngay_vao_lam': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),

@@ -7,12 +7,7 @@
 <div class="container col-6 py-5">
     <div class="card">
         <div class="card-header bg-dark text-white text-center">
-            <a
-                href="{% url 'QLthietbi_app:hoso_list' %}"
-                class="btn btn-light btn-sm float-left" data-tooltip="tooltip" data-placement="right" title="Trở lại"
-                ><i class="fa fa-angle-double-left" aria-hidden="true"></i>
-            </a>
-            <h5 class="card-title">Sửa thông tin tài khoản</h5>
+            <h5 class="card-title">Đổi mật khẩu</h5>
         </div>
         <div class="card-body">
             {% if form.errors %}
@@ -27,7 +22,7 @@
             {% endif %}
             <span class="align-middle text-center" style="display: block;">
               <i class="fa fa-info-circle" aria-hidden="true"></i>
-              <strong>Vui lòng nhập đầy đủ thông tin tài khoản</strong>
+              <strong>Vui lòng nhập đầy đủ thông tin</strong>
             </span>
             <hr />
             <form method="post" enctype="multipart/form-data">
@@ -55,7 +50,7 @@
           <p>Mật khẩu của bạn đã được thay đổi thành công.</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Đóng</button>
+          <button type="button" class="btn btn-dark" data-dismiss="modal">Đóng</button>
         </div>
       </div>
     </div>
