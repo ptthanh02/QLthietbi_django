@@ -453,6 +453,7 @@ def doi_matkhau_ktv(request):
     return render(request, 'ktv/doi_matkhau_ktv.html', {'form': form, 'success': success, 'baoCaoCount': baoCaoCount})
 # -------------------------------Hồ Sơ----------------------------------
 def tao_user(request):
+    
     if request.method == 'POST':
         form = HoSoForm(request.POST,request.FILES)
         if form.is_valid():
@@ -469,7 +470,7 @@ def tao_user(request):
                 user.set_password(password)
                 user.save()
             
-            return redirect('QLthietbi_app:render_login')
+            return redirect('QLthietbi_app:hoso_list')
     else:
         form = HoSoForm()
     
